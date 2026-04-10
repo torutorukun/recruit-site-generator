@@ -128,7 +128,7 @@ function initPhotoGrid(){
   SLOTS.forEach(s=>{
     const div=document.createElement('div');
     div.className='photo-slot';div.id='slot-'+s.id;
-    div.innerHTML=`<input type="file" accept="image/*" style="display:none" id="file-${s.id}" onchange="handlePhoto('${s.id}',this)"><div class="photo-empty" onclick="document.getElementById('file-${s.id}').click()"><span style="font-size:22px">📷</span><span>クリック or ドラッグ</span></div><div class="photo-label">${s.label}</div><div class="photo-hint">${s.hint}</div>`;
+    div.innerHTML=`<input type="file" accept="image/*" style="display:none" id="file-${s.id}" onchange="handlePhoto('${s.id}',this)"><div class="photo-empty" onclick="document.getElementById('file-${s.id}').click()"><span style="font-size:22px">📷</span><span>クリック・ドラッグ・Cmd+V</span></div><div class="photo-label">${s.label}</div><div class="photo-hint">${s.hint}</div>`;
     div.addEventListener('dragover',e=>e.preventDefault());
     div.addEventListener('drop',e=>{e.preventDefault();handlePhotoFile(s.id,e.dataTransfer.files[0]);});
     grid.appendChild(div);
@@ -222,6 +222,26 @@ function showError(msg){document.getElementById('loading-area').style.display='n
 function setStep(n){[1,2,3].forEach(i=>{const el=document.getElementById('s'+i);el.className='step'+(i===n?' active':i<n?' done-step':'');el.querySelector('.step-dot').textContent=i<n?'✓':i;});}
 function reset(){document.getElementById('done-area').style.display='none';document.getElementById('form-area').style.display='block';document.getElementById('indeed-text').value='';document.getElementById('hp-url').value='';document.getElementById('indeed-url').value='';document.getElementById('char-count').textContent='0文字';Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// クリップボードからペースト対応
+document.addEventListener('paste', function(e) {
+  const items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.startsWith('image/')) {
+      const file = items[i].getAsFile();
+      // アクティブなスロットがあればそこに、なければ最初の空きスロットに
+      const active = document.querySelector('.photo-slot:hover');
+      const emptySlot = [...document.querySelectorAll('.photo-slot')].find(s => s.querySelector('img') === null || s.querySelector('.photo-empty img') === null);
+      const targetSlot = active || emptySlot;
+      if (targetSlot) {
+        const id = targetSlot.id.replace('slot-', '');
+        handlePhotoFile(id, file);
+      }
+      break;
+    }
+  }
+});
 document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPw();});
 </script>
 </body>
