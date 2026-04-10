@@ -793,6 +793,7 @@ footer {
       <span class="section-eyebrow fade-up">Company</span>
       <h2 class="section-title fade-up delay-1">会社概要</h2>
     </div>
+    ${e.photos && e.photos.company ? `
     <div class="overview-grid">
       <table class="overview-table fade-up">
         <tbody>
@@ -809,11 +810,23 @@ footer {
         </tbody>
       </table>
       <div class="overview-photo fade-up delay-1">
-        ${e.photos && e.photos.company
-          ? `<img src="${e.photos.company}" alt="${cn}の写真">`
-          : `<div style="width:100%;height:100%;background:var(--stone-02);display:flex;align-items:center;justify-content:center;color:var(--stone-03);font-size:13px;letter-spacing:0.05em;">会社・施設写真</div>`}
+        <img src="${e.photos.company}" alt="${cn}の写真">
       </div>
-    </div>
+    </div>` : `
+    <table class="overview-table fade-up" style="max-width:560px">
+      <tbody>
+        ${[
+          ['社名', e.companyName],
+          ['所在地', e.address],
+          ['代表者', e.ceo],
+          ['設立', e.founded],
+          ['売上高', e.sales],
+          ['事業内容', e.business],
+        ].filter(([,v]) => v && v.trim()).map(([k,v]) =>
+          `<tr><td>${k}</td><td>${v}</td></tr>`
+        ).join('')}
+      </tbody>
+    </table>`}
   </div>
 </section>
 
@@ -835,29 +848,35 @@ footer {
       </div>`).join('')}
     </div>` : ''}
     ${e.biz1Title && e.biz1Body ? `
+    ${e.photos && e.photos.biz1 ? `
     <div class="biz-detail fade-up">
       <div>
         <h3 class="biz-title">${e.biz1Title}</h3>
         <p class="biz-text">${e.biz1Body}</p>
       </div>
       <div class="biz-photo">
-        ${e.photos && e.photos.biz1
-          ? `<img src="${e.photos.biz1}" alt="${e.biz1Title}">`
-          : `<div style="width:100%;height:100%;background:var(--stone-02);"></div>`}
+        <img src="${e.photos.biz1}" alt="${e.biz1Title}">
       </div>
-    </div>` : ''}
+    </div>` : `
+    <div class="fade-up" style="max-width:720px;margin-bottom:var(--sp-4xl)">
+      <h3 class="biz-title">${e.biz1Title}</h3>
+      <p class="biz-text">${e.biz1Body}</p>
+    </div>`}` : ''}
     ${e.biz2Title && e.biz2Body ? `
+    ${e.photos && e.photos.biz2 ? `
     <div class="biz-detail reverse fade-up">
       <div>
         <h3 class="biz-title">${e.biz2Title}</h3>
         <p class="biz-text">${e.biz2Body}</p>
       </div>
       <div class="biz-photo">
-        ${e.photos && e.photos.biz2
-          ? `<img src="${e.photos.biz2}" alt="${e.biz2Title}">`
-          : `<div style="width:100%;height:100%;background:var(--stone-02);"></div>`}
+        <img src="${e.photos.biz2}" alt="${e.biz2Title}">
       </div>
-    </div>` : ''}
+    </div>` : `
+    <div class="fade-up" style="max-width:720px;margin-bottom:var(--sp-4xl)">
+      <h3 class="biz-title">${e.biz2Title}</h3>
+      <p class="biz-text">${e.biz2Body}</p>
+    </div>`}` : ''}
   </div>
 </section>
 
@@ -903,6 +922,7 @@ ${(sMin && sMax) || vc.length >= 1 ? `
       <span class="section-eyebrow fade-up">Culture</span>
       <h2 class="section-title fade-up delay-1">カルチャー</h2>
     </div>
+    ${e.photos && e.photos.culture ? `
     <div class="culture-grid">
       <div class="fade-up">
         ${(e.cultureVal1 || e.cultureVal2) ? `
@@ -913,11 +933,17 @@ ${(sMin && sMax) || vc.length >= 1 ? `
         ${e.cultureDesc ? `<p class="culture-text">${e.cultureDesc}</p>` : ''}
       </div>
       <div class="culture-photo fade-up delay-1">
-        ${e.photos && e.photos.culture
-          ? `<img src="${e.photos.culture}" alt="カルチャー写真">`
-          : `<div style="width:100%;height:100%;background:var(--stone-02);"></div>`}
+        <img src="${e.photos.culture}" alt="カルチャー写真">
       </div>
-    </div>
+    </div>` : `
+    <div class="fade-up" style="max-width:720px">
+      ${(e.cultureVal1 || e.cultureVal2) ? `
+      <div class="culture-tags">
+        ${e.cultureVal1 ? `<span class="culture-tag">${e.cultureVal1}</span>` : ''}
+        ${e.cultureVal2 ? `<span class="culture-tag">${e.cultureVal2}</span>` : ''}
+      </div>` : ''}
+      ${e.cultureDesc ? `<p class="culture-text" style="font-size:16px;line-height:1.85">${e.cultureDesc}</p>` : ''}
+    </div>`}
   </div>
 </section>
 
@@ -946,12 +972,11 @@ ${hasIV ? `
       <span class="section-eyebrow fade-up">Voice</span>
       <h2 class="section-title fade-up delay-1">社員の声</h2>
     </div>
+    ${e.photos && e.photos.member ? `
     <div class="iv-card fade-up">
       <div>
         <div class="iv-photo">
-          ${e.photos && e.photos.member
-            ? `<img src="${e.photos.member}" alt="${iv.person || '社員'}の写真">`
-            : `<div style="width:100%;height:100%;background:var(--stone-02);"></div>`}
+          <img src="${e.photos.member}" alt="${iv.person || '社員'}の写真">
         </div>
         ${iv.person ? `<p class="iv-person">${iv.person}</p>` : ''}
       </div>
@@ -962,7 +987,15 @@ ${hasIV ? `
           <p class="qa-a">${a||''}</p>
         </div>`).join('')}
       </div>
-    </div>
+    </div>` : `
+    <div class="fade-up" style="background:var(--stone-01);border-radius:8px;padding:var(--sp-3xl);border:1px solid var(--border);max-width:720px">
+      ${iv.person ? `<p style="font-size:13px;font-weight:700;color:var(--text-grey);margin-bottom:var(--sp-l);letter-spacing:0.05em">${iv.person}</p>` : ''}
+      ${[[iv.q1,iv.a1],[iv.q2,iv.a2],[iv.q3,iv.a3]].filter(([q])=>q&&q.trim()).map(([q,a])=>`
+      <div class="qa-item">
+        <div class="qa-q"><span class="qa-badge">Q</span>${q}</div>
+        <p class="qa-a">${a||''}</p>
+      </div>`).join('')}
+    </div>`}
   </div>
 </section>` : ''}
 
