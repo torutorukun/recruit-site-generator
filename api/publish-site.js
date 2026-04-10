@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
       const ext = mimeType.split('/')[1];
       const buffer = Buffer.from(base64Data, 'base64');
       const blob = await put(`sites/${id}/img${index}.${ext}`, buffer, {
-        access: 'public',
+        access: 'private',
         contentType: mimeType,
       });
       processedHtml = processedHtml.replace(placeholder, blob.url);
@@ -42,7 +42,7 @@ module.exports = async (req, res) => {
 
   // HTMLをアップ
   const blob = await put(`sites/${id}/index.html`, processedHtml, {
-    access: 'public',
+    access: 'private',
     contentType: 'text/html; charset=utf-8',
   });
 
