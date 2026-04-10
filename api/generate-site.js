@@ -1,6 +1,4 @@
-// 採用特設サイトHTMLを生成するAPI
-// DESIGN.md準拠：SmartHR Japanese Typography + frontend-design skill
-module.exports = async function(req, res) {
+module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -26,7 +24,8 @@ module.exports = async function(req, res) {
   const sMax = parseInt(e.salaryMax) || 0;
   const iv = e.interview || {};
   const hasIV = (iv.q1 && iv.q1.trim()) || (iv.q2 && iv.q2.trim()) || (iv.q3 && iv.q3.trim());
-  const vf = (e.salaryFactors || []).filter(f => f.name && f.name.trim() && f.desc && f.desc.trim());
+  // ★ indeedUrl を使う
+  const indeedUrl = e.indeedUrl || '#';
 
   const html = `<!DOCTYPE html>
 <html lang="ja">
@@ -50,7 +49,6 @@ module.exports = async function(req, res) {
 }
 
 :root {
-  /* Stone系ウォームグレー（SmartHR DESIGN.md準拠） */
   --text-black: #23221e;
   --text-grey: #706d65;
   --text-disabled: #c1bdb7;
@@ -62,18 +60,15 @@ module.exports = async function(req, res) {
   --border: #d6d3d0;
   --surface: #f2f1f0;
 
-  /* ブランドカラー */
   --navy: #1A2B4A;
   --blue: #1B6FBE;
   --blue-light: #3B8FD4;
   --blue-pale: #EBF4FF;
   --accent: #E8F1FB;
 
-  /* タイポグラフィ（日本語DESIGN.md準拠） */
   --font-ja: AdjustedYuGothic, "Yu Gothic", YuGothic, "Hiragino Sans", "Noto Sans JP", sans-serif;
   --font-serif: "Noto Serif JP", "游明朝", YuMincho, serif;
 
-  /* スペーシング（8pxスケール） */
   --sp-xs: 4px;
   --sp-s: 8px;
   --sp-m: 16px;
@@ -90,11 +85,10 @@ body {
   font-family: var(--font-ja);
   color: var(--text-black);
   background: var(--white);
-  /* 日本語body: line-height 1.75、letter-spacing 0.05em */
   line-height: 1.75;
   letter-spacing: 0.03em;
   overflow-x: hidden;
-  overflow-wrap: break-word; /* 禁則処理 */
+  overflow-wrap: break-word;
   word-break: break-word;
 }
 
@@ -128,7 +122,7 @@ nav {
   font-size: 18px;
   font-weight: 700;
   color: var(--navy);
-  line-height: 1.25; /* 見出し：1.25 */
+  line-height: 1.25;
   letter-spacing: 0;
 }
 .nav-links {
@@ -460,34 +454,6 @@ section {
   padding-bottom: var(--sp-m);
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
-.factor-item {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: var(--sp-m);
-  padding: var(--sp-m) 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  font-size: 13px;
-}
-.factor-name {
-  background: rgba(27,111,190,0.3);
-  color: var(--blue-light);
-  font-weight: 700;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--sp-xs) var(--sp-s);
-  font-size: 11px;
-  letter-spacing: 0.03em;
-  text-align: center;
-}
-.factor-desc {
-  color: rgba(255,255,255,0.65);
-  line-height: 1.75;
-  letter-spacing: 0.03em;
-  display: flex;
-  align-items: center;
-}
 .career-list { list-style: none; }
 .career-item {
   display: flex;
@@ -800,7 +766,7 @@ footer {
     <li><a href="#culture">カルチャー</a></li>
     <li><a href="#workstyle">働き方</a></li>
   </ul>
-  <a href="#cta" class="nav-cta">応募する</a>
+  <a href="${indeedUrl}" target="_blank" class="nav-cta">応募する</a>
 </nav>
 
 <!-- ヒーロー -->
@@ -835,7 +801,6 @@ footer {
             ['所在地', e.address],
             ['代表者', e.ceo],
             ['設立', e.founded],
-            ['従業員数', e.employees],
             ['売上高', e.sales],
             ['事業内容', e.business],
           ].filter(([,v]) => v && v.trim()).map(([k,v]) =>
@@ -897,7 +862,7 @@ footer {
 </section>
 
 <!-- 報酬・評価 -->
-${(sMin && sMax) || vf.length >= 1 || vc.length >= 1 ? `
+${(sMin && sMax) || vc.length >= 1 ? `
 <section class="compensation" id="compensation">
   <div class="container">
     <div class="section-header">
@@ -910,18 +875,11 @@ ${(sMin && sMax) || vf.length >= 1 || vc.length >= 1 ? `
         <span class="salary-label">${stl}</span>
         <div class="salary-amount">${sMin}<span style="font-size:28px">〜</span>${sMax}</div>
         <div class="salary-unit">${sUnit}</div>
-        <p class="salary-note">${e.salaryNote || '賞与・昇給あり'}<br>※詳細は面接時にご確認ください</p>
+        <p class="salary-note">${e.salaryNote || '昇給あり'}<br>※詳細は面接時にご確認ください</p>
       </div>` : '<div></div>'}
       <div class="fade-up delay-1">
-        ${vf.length >= 1 ? `
-        <p class="comp-right-title">報酬の考え方</p>
-        ${vf.slice(0,3).map(f => `
-        <div class="factor-item">
-          <div class="factor-name">${f.name}</div>
-          <div class="factor-desc">${f.desc}</div>
-        </div>`).join('')}` : ''}
         ${vc.length >= 1 ? `
-        <p class="comp-right-title" style="margin-top:${vf.length ? '32px' : '0'}">キャリアパス</p>
+        <p class="comp-right-title">キャリアパス</p>
         <ul class="career-list">
           ${vc.map(s => `
           <li class="career-item">
@@ -1040,25 +998,21 @@ ${hasIV ? `
 <section class="cta" id="cta">
   <h2 class="fade-up">${cn}で、<br>一緒に働きませんか？</h2>
   <p class="fade-up delay-1">まずはカジュアルにお話しましょう。</p>
-  <a href="${e.hpUrl||'#'}" target="_blank" class="cta-btn fade-up delay-2">採用ページを見る</a>
+  <a href="${indeedUrl}" target="_blank" class="cta-btn fade-up delay-2">Indeedで応募する</a>
 </section>
 
 <footer>
-  <p>© ${cn} All Rights Reserved. | 採用ピッチ資料ジェネレーター にて作成</p>
+  <p>© ${cn} All Rights Reserved. | 採用特設サイトジェネレーター にて作成</p>
 </footer>
 
 <script>
-// スクロールフェードイン
 const obs = new IntersectionObserver(entries => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
   });
 }, { threshold: 0.08 });
 document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
 
-// スムーススクロール
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     const id = a.getAttribute('href');
