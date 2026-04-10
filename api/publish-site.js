@@ -11,10 +11,37 @@ module.exports = async (req, res) => {
   if (password !== process.env.APP_PASSWORD) return res.status(401).json({ error: 'Unauthorized' });
   if (!html) return res.status(400).json({ error: 'No HTML provided' });
 
-  // ランダムID生成
   const id = Math.random().toString(36).slice(2, 10);
 
-  const blob = await put(`sites/${id}.html`, html, {
+  // base64画像を抽出してBlobにアップ、URLに置き換え
+  const imgRegex = /src="(data:image\/(png|jpeg|webp|gif);base64,[^"]+)"/g;
+  let processedHtml = html;
+  const uploads = [];
+  let match;
+  let imgIndex = 0;
+
+  while ((match = imgRegex.exec(html)) !== null) {
+    uploads.push({ placeholder: match[1], index: imgIndex++ });
+  }
+
+  // 並行でアップロード
+  await Promise.all(uploads.map(async ({ placeholder, index }) => {
+    try {
+      const [, base64Data] = placeholder.split(',');
+      const mimeMatch = placeholder.match(/data:(image\/\w+);/);
+      const mimeType = mimeMatch ? mimeMatch[1] : 'image/png';
+      const ext = mimeType.split('/')[1];
+      const buffer = Buffer.from(base64Data, 'base64');
+      const blob = await put(`sites/${id}/img${index}.${ext}`, buffer, {
+        access: 'public',
+        contentType: mimeType,
+      });
+      processedHtml = processedHtml.replace(placeholder, blob.url);
+    } catch(e) {}
+  }));
+
+  // HTMLをアップ
+  const blob = await put(`sites/${id}/index.html`, processedHtml, {
     access: 'public',
     contentType: 'text/html; charset=utf-8',
   });
