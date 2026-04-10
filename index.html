@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>採用特設サイトジェネレーター</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Yu Gothic','Hiragino Kaku Gothic ProN',sans-serif;background:#f0f7ff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(27,126,196,0.1);padding:36px;max-width:780px;width:100%}
+h1{font-size:22px;font-weight:700;color:#1B7EC4;margin-bottom:6px}
+.sub{font-size:13px;color:#7A8AAA;margin-bottom:28px}
+label{display:block;font-size:13px;font-weight:600;color:#3A4A6A;margin-bottom:6px}
+textarea,input[type=text],input[type=password]{width:100%;padding:10px 14px;border:1.5px solid #D0E8F5;border-radius:10px;font-size:13px;font-family:inherit;outline:none;transition:border .2s;background:#F5FBFF}
+textarea:focus,input:focus{border-color:#1B7EC4}
+textarea{min-height:200px;resize:vertical;line-height:1.6}
+.section{margin-bottom:22px}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.photo-slot{border:2px dashed #C0DCF0;border-radius:10px;overflow:hidden;cursor:pointer;background:#F5FBFF;transition:border .2s}
+.photo-slot:hover{border-color:#1B7EC4}
+.photo-empty{height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#A0B8CC;font-size:12px}
+.photo-label{padding:6px 10px;font-size:11px;font-weight:600;color:#3A4A6A}
+.photo-hint{padding:0 10px 8px;font-size:10px;color:#7A8AAA}
+.btn{display:block;width:100%;padding:14px;background:#1B7EC4;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s;margin-top:8px}
+.btn:hover{background:#1565A0}
+.error{background:#FEF0F0;border:1.5px solid #F5C0C0;border-radius:10px;padding:12px 16px;color:#C0392B;font-size:13px;margin-bottom:16px}
+.loading{text-align:center;padding:48px 0}
+.loading .spinner{width:44px;height:44px;border:4px solid #D0E8F5;border-top:4px solid #1B7EC4;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:#3A4A6A;font-size:14px;font-weight:600;margin-bottom:4px}
+.loading small{color:#7A8AAA;font-size:12px}
+.done{text-align:center;padding:40px 0}
+.done .icon{font-size:52px;margin-bottom:12px}
+.done h2{color:#1B7EC4;font-size:20px;margin-bottom:8px}
+.done p{color:#7A8AAA;font-size:13px;margin-bottom:20px}
+#password-screen{text-align:center}
+#password-screen .pw-input{max-width:280px;margin:20px auto 12px;display:block}
+.step-bar{display:flex;align-items:center;gap:6px;margin-bottom:24px;font-size:12px}
+.step{display:flex;align-items:center;gap:5px;color:#7A8AAA}
+.step.active{color:#1B7EC4;font-weight:600}
+.step-dot{width:22px;height:22px;border-radius:50%;background:#E0EEF8;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#7A8AAA}
+.step.active .step-dot{background:#1B7EC4;color:#fff}
+.step.done-step .step-dot{background:#EAF4FC;color:#1B7EC4;border:1.5px solid #1B7EC4}
+.divider{flex:1;height:1px;background:#D0E8F5}
+.preview-btn{display:block;width:100%;padding:14px;background:#fff;color:#1B7EC4;border:2px solid #1B7EC4;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s;margin-top:12px;text-align:center;text-decoration:none}
+.preview-btn:hover{background:#EFF6FF}
+</style>
+</head>
+<body>
+<div class="card">
+
+<div id="password-screen">
+  <div style="font-size:40px;margin-bottom:12px">🌐</div>
+  <h1>採用特設サイトジェネレーター</h1>
+  <p class="sub">Indeed原稿を貼るだけで採用サイトを自動生成</p>
+  <div id="pw-error" class="error" style="display:none"></div>
+  <input type="password" id="pw-input" class="pw-input" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')checkPw()">
+  <button class="btn" style="max-width:280px;margin:0 auto" onclick="checkPw()">ログイン</button>
+</div>
+
+<div id="main-screen" style="display:none">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+    <div style="font-size:28px">🌐</div>
+    <div>
+      <h1>採用特設サイトジェネレーター</h1>
+      <p class="sub">Indeed原稿 → 採用特設サイト（HTML）自動生成</p>
+    </div>
+  </div>
+
+  <div class="step-bar" id="step-bar">
+    <div class="step active" id="s1"><div class="step-dot">1</div>情報入力</div>
+    <div class="divider"></div>
+    <div class="step" id="s2"><div class="step-dot">2</div>生成中</div>
+    <div class="divider"></div>
+    <div class="step" id="s3"><div class="step-dot">3</div>完了</div>
+  </div>
+
+  <div id="error-box" class="error" style="display:none"></div>
+
+  <div id="form-area">
+    <div class="section">
+      <label>① Indeed求人原稿をそのまま貼り付け <span style="color:#7A8AAA;font-weight:400">（必須）</span></label>
+      <textarea id="indeed-text" placeholder="IndeedやAirworkなどの求人ページをコピペしてください..."></textarea>
+      <div style="font-size:11px;color:#7A8AAA;margin-top:4px" id="char-count">0文字</div>
+    </div>
+    <div class="section">
+      <label>② ホームページURL <span style="color:#7A8AAA;font-weight:400">（任意・入れると会社情報・写真を自動補強）</span></label>
+      <input type="text" id="hp-url" placeholder="https://example.com">
+    </div>
+    <div class="section">
+      <label>③ 写真アップロード <span style="color:#7A8AAA;font-weight:400">（任意）</span></label>
+      <div class="photos" id="photo-grid"></div>
+    </div>
+    <button class="btn" onclick="startGenerate()">🌐 採用サイトを生成してダウンロード</button>
+  </div>
+
+  <div id="loading-area" style="display:none">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p id="loading-msg">求人原稿を解析中...</p>
+      <small>30〜60秒ほどかかります</small>
+    </div>
+  </div>
+
+  <div id="done-area" style="display:none">
+    <div class="done">
+      <div class="icon">✅</div>
+      <h2>ダウンロード完了！</h2>
+      <p>HTMLファイルがダウンロードされました。<br>ブラウザで開くとプレビューできます。</p>
+      <button class="btn" onclick="reset()">別の会社で生成する</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const SLOTS=[{id:'logo',label:'会社ロゴ',hint:'PNG推奨・透過背景'},{id:'cover',label:'表紙写真',hint:'オフィス外観・チーム集合'},{id:'company',label:'会社概要写真',hint:'代表者・オフィス内観'},{id:'biz1',label:'事業①写真',hint:'業務風景・サービス紹介'},{id:'biz2',label:'事業②写真',hint:'現場・授業風景など'},{id:'member',label:'社員インタビュー',hint:'インタビュー対象者'},{id:'culture',label:'チーム写真',hint:'チーム・社内イベント'}];
+const photos={};
+
+function initPhotoGrid(){
+  const grid=document.getElementById('photo-grid');
+  SLOTS.forEach(s=>{
+    const div=document.createElement('div');
+    div.className='photo-slot';div.id='slot-'+s.id;
+    div.innerHTML=`<input type="file" accept="image/*" style="display:none" id="file-${s.id}" onchange="handlePhoto('${s.id}',this)"><div class="photo-empty" onclick="document.getElementById('file-${s.id}').click()"><span style="font-size:22px">📷</span><span>クリック or ドラッグ</span></div><div class="photo-label">${s.label}</div><div class="photo-hint">${s.hint}</div>`;
+    div.addEventListener('dragover',e=>e.preventDefault());
+    div.addEventListener('drop',e=>{e.preventDefault();handlePhotoFile(s.id,e.dataTransfer.files[0]);});
+    grid.appendChild(div);
+  });
+}
+
+function handlePhoto(id,input){handlePhotoFile(id,input.files[0]);}
+function handlePhotoFile(id,file){
+  if(!file||!file.type.startsWith('image/'))return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const result=e.target.result;
+    const image=new Image();
+    image.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const ctx=canvas.getContext('2d');
+      canvas.width=image.width;canvas.height=image.height;
+      ctx.drawImage(image,0,0);
+      photos[id+'_ratio']=image.width/image.height;
+      photos[id]=canvas.toDataURL('image/png');
+      document.getElementById('slot-'+id).querySelector('.photo-empty').innerHTML=`<img src="${result}" style="width:100%;height:110px;object-fit:cover;display:block">`;
+    };
+    image.src=result;
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('indeed-text').addEventListener('input',function(){document.getElementById('char-count').textContent=this.value.length+'文字';});
+
+function checkPw(){
+  const pw=document.getElementById('pw-input').value;if(!pw)return;
+  fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:'test',password:pw})})
+  .then(r=>{
+    if(r.status===401){document.getElementById('pw-error').style.display='block';document.getElementById('pw-error').textContent='パスワードが違います';}
+    else{sessionStorage.setItem('pw',pw);document.getElementById('password-screen').style.display='none';document.getElementById('main-screen').style.display='block';initPhotoGrid();}
+  }).catch(()=>{sessionStorage.setItem('pw',pw);document.getElementById('password-screen').style.display='none';document.getElementById('main-screen').style.display='block';initPhotoGrid();});
+}
+
+async function startGenerate(){
+  const text=document.getElementById('indeed-text').value.trim();
+  const url=document.getElementById('hp-url').value.trim();
+  if(!text){showError('Indeed原稿を貼り付けてください');return;}
+  setStep(2);document.getElementById('form-area').style.display='none';document.getElementById('loading-area').style.display='block';document.getElementById('error-box').style.display='none';
+  const pw=sessionStorage.getItem('pw');let extracted=null;
+
+  // HPの画像を自動取得
+  if(url&&url.startsWith('http')){
+    document.getElementById('loading-msg').textContent='HPから情報・画像を取得中...';
+    try{
+      const imgRes=await fetch('/api/fetch-images',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hpUrl:url,password:pw})});
+      const imgData=await imgRes.json();
+      if(imgData.images){
+        Object.entries(imgData.images).forEach(([key,b64])=>{
+          if(!photos[key]&&b64){photos[key]=b64;
+            const slot=document.getElementById('slot-'+key);
+            if(slot)slot.querySelector('.photo-empty').innerHTML=`<img src="${b64}" style="width:100%;height:110px;object-fit:cover;display:block">`;
+          }
+        });
+      }
+    }catch(e){}
+  }
+
+  document.getElementById('loading-msg').textContent='求人原稿を解析中...';
+  for(let i=1;i<=4;i++){
+    if(i>1){document.getElementById('loading-msg').textContent=`混雑中... リトライ ${i}/4`;await sleep(3000*i);}
+    try{
+      const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,password:pw,hpUrl:url})});
+      const j=await r.json();
+      if(j.error&&j.error.toLowerCase().includes('overload')&&i<4)continue;
+      if(j.error)throw new Error(j.error);
+      extracted=j.result;break;
+    }catch(e){if(i===4){showError(e.message);return;}}
+  }
+
+  document.getElementById('loading-msg').textContent='採用サイトを生成中...';
+  try{
+    const dataWithPhotos={...extracted,photos,hpUrl:url};
+    const r=await fetch('/api/generate-site',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:dataWithPhotos,password:pw})});
+    const j=await r.json();
+    if(j.error)throw new Error(j.error);
+    const blob=new Blob([j.html],{type:'text/html;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=(extracted.companyName||'採用')+'_採用サイト.html';
+    a.click();
+    setStep(3);document.getElementById('loading-area').style.display='none';document.getElementById('done-area').style.display='block';
+  }catch(e){showError('サイト生成エラー: '+e.message);}
+}
+
+function showError(msg){document.getElementById('loading-area').style.display='none';document.getElementById('form-area').style.display='block';document.getElementById('error-box').style.display='block';document.getElementById('error-box').textContent=msg;setStep(1);}
+function setStep(n){[1,2,3].forEach(i=>{const el=document.getElementById('s'+i);el.className='step'+(i===n?' active':i<n?' done-step':'');el.querySelector('.step-dot').textContent=i<n?'✓':i;});}
+function reset(){document.getElementById('done-area').style.display='none';document.getElementById('form-area').style.display='block';document.getElementById('indeed-text').value='';document.getElementById('hp-url').value='';document.getElementById('char-count').textContent='0文字';Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPw();});
+</script>
+</body>
+</html>
