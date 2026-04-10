@@ -110,9 +110,17 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
   <div id="done-area" style="display:none">
     <div class="done">
       <div class="icon">✅</div>
-      <h2>ダウンロード完了！</h2>
+      <h2>生成完了！</h2>
       <p>HTMLファイルがダウンロードされました。<br>ブラウザで開くとプレビューできます。</p>
-      <button class="btn" onclick="reset()">別の会社で生成する</button>
+      <button class="btn" id="publish-btn" onclick="publishSite()" style="margin-bottom:8px">🔗 URLで共有できるようにする</button>
+      <div id="publish-result" style="display:none;background:#EFF6FF;border:1.5px solid #D0E8F5;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px">
+        <div style="color:#3A4A6A;margin-bottom:6px;font-weight:600">共有URL（リンクを知っている人だけ見られます）</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="text" id="publish-url" readonly style="flex:1;font-size:12px;background:#fff;color:#1B7EC4">
+          <button onclick="copyUrl()" style="padding:6px 12px;background:#1B7EC4;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;white-space:nowrap">コピー</button>
+        </div>
+      </div>
+      <button class="btn" onclick="reset()" style="background:#fff;color:#1B7EC4;border:2px solid #1B7EC4">別の会社で生成する</button>
     </div>
   </div>
 </div>
@@ -212,6 +220,7 @@ async function startGenerate(){
     const blob=new Blob([j.html],{type:'text/html;charset=utf-8'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
+    lastGeneratedHtml = j.html;
     a.download=(extracted.companyName||'採用')+'_採用サイト.html';
     a.click();
     setStep(3);document.getElementById('loading-area').style.display='none';document.getElementById('done-area').style.display='block';
@@ -220,8 +229,41 @@ async function startGenerate(){
 
 function showError(msg){document.getElementById('loading-area').style.display='none';document.getElementById('form-area').style.display='block';document.getElementById('error-box').style.display='block';document.getElementById('error-box').textContent=msg;setStep(1);}
 function setStep(n){[1,2,3].forEach(i=>{const el=document.getElementById('s'+i);el.className='step'+(i===n?' active':i<n?' done-step':'');el.querySelector('.step-dot').textContent=i<n?'✓':i;});}
-function reset(){document.getElementById('done-area').style.display='none';document.getElementById('form-area').style.display='block';document.getElementById('indeed-text').value='';document.getElementById('hp-url').value='';document.getElementById('indeed-url').value='';document.getElementById('char-count').textContent='0文字';Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
+function reset(){lastGeneratedHtml=null;document.getElementById('publish-btn').textContent='🔗 URLで共有できるようにする';document.getElementById('publish-btn').disabled=false;document.getElementById('publish-result').style.display='none';document.getElementById('done-area').style.display='none';document.getElementById('form-area').style.display='block';document.getElementById('indeed-text').value='';document.getElementById('hp-url').value='';document.getElementById('indeed-url').value='';document.getElementById('char-count').textContent='0文字';Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+let lastGeneratedHtml = null;
+
+async function publishSite() {
+  if (!lastGeneratedHtml) { alert('先にサイトを生成してください'); return; }
+  const btn = document.getElementById('publish-btn');
+  btn.textContent = '公開中...';
+  btn.disabled = true;
+  try {
+    const pw = sessionStorage.getItem('pw');
+    const r = await fetch('/api/publish-site', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({html: lastGeneratedHtml, password: pw})
+    });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error);
+    document.getElementById('publish-url').value = j.url;
+    document.getElementById('publish-result').style.display = 'block';
+    btn.textContent = '✅ URL発行済み';
+  } catch(e) {
+    btn.textContent = '🔗 URLで共有できるようにする';
+    btn.disabled = false;
+    alert('エラー: ' + e.message);
+  }
+}
+
+function copyUrl() {
+  const url = document.getElementById('publish-url').value;
+  navigator.clipboard.writeText(url);
+  event.target.textContent = 'コピー済み！';
+  setTimeout(() => event.target.textContent = 'コピー', 2000);
+}
 
 // クリップボードからペースト対応
 document.addEventListener('paste', function(e) {
