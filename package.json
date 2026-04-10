@@ -1,5 +1,8 @@
 {
   "name": "recruit-site-generator",
   "version": "1.0.0",
-  "description": "採用特設サイト自動生成ツール"
+  "description": "\u63a1\u7528\u7279\u8a2d\u30b5\u30a4\u30c8\u81ea\u52d5\u751f\u6210\u30c4\u30fc\u30eb",
+  "dependencies": {
+    "@vercel/blob": "^0.23.0"
+  }
 }
