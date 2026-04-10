@@ -777,7 +777,7 @@ footer {
     <h1 class="hero-name">${shortName}</h1>
     <div class="hero-rule"></div>
     ${e.mission ? `<p class="hero-mission">${e.mission}</p>` : ''}
-    ${e.missionDesc ? `<p class="hero-desc">${e.missionDesc.slice(0, 100)}...</p>` : ''}
+    ${e.missionDesc ? `<p class="hero-desc">${e.missionDesc}</p>` : ''}
   </div>
   <div class="hero-right">
     ${e.photos && e.photos.cover
