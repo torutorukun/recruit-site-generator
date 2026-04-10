@@ -102,8 +102,8 @@ module.exports = async function(req, res) {
     // OGP画像（表紙に使用）
     if (ogImage) fetchTargets.push({ key: 'cover', url: ogImage });
     // その他の画像（最大3枚）
-    const otherKeys = ['company', 'biz1', 'culture'];
-    imgUrls.slice(0, 8).forEach((img, i) => {
+    const otherKeys = ['company', 'biz1', 'biz2', 'member', 'culture'];
+    imgUrls.slice(0, 15).forEach((img, i) => {
       if (i < otherKeys.length && !results[otherKeys[i]]) {
         fetchTargets.push({ key: otherKeys[i], url: img.url });
       }
@@ -111,7 +111,7 @@ module.exports = async function(req, res) {
 
     // 並行で取得（最大5枚）
     await Promise.allSettled(
-      fetchTargets.slice(0, 5).map(async ({ key, url }) => {
+      fetchTargets.slice(0, 8).map(async ({ key, url }) => {
         const b64 = await fetchImageAsBase64(url);
         if (b64) results[key] = b64;
       })
