@@ -102,12 +102,7 @@ module.exports = async function(req, res) {
     // OGP画像（表紙に使用）
     if (ogImage) fetchTargets.push({ key: 'cover', url: ogImage });
     // その他の画像（最大3枚）
-    const otherKeys = ['company', 'biz1', 'biz2', 'member', 'culture'];
-    imgUrls.slice(0, 15).forEach((img, i) => {
-      if (i < otherKeys.length && !results[otherKeys[i]]) {
-        fetchTargets.push({ key: otherKeys[i], url: img.url });
-      }
-    });
+    // サイト内写真の自動取得はしない（ロゴとOGPのみ使用）
 
     // 並行で取得（最大5枚）
     await Promise.allSettled(
