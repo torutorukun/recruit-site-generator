@@ -111,6 +111,10 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
     <div class="done">
       <div class="icon">✅</div>
       <h2>生成完了！</h2>
+      <div id="suggestions-panel" style="display:none;margin-top:16px;background:#F0F7FF;border:1.5px solid #B3D4F5;border-radius:12px;padding:16px 20px;text-align:left">
+        <p style="font-weight:700;font-size:13px;color:#1B6FBE;margin-bottom:10px">追加情報でさらに充実したサイトになります</p>
+        <ul id="suggestions-list" style="list-style:none;padding:0;margin:0;font-size:12px;color:#444;line-height:2"></ul>
+      </div>
       <p>HTMLファイルがダウンロードされました。<br>ブラウザで開くとプレビューできます。</p>
       <button class="btn" id="publish-btn" onclick="publishSite()" style="margin-bottom:8px">🔗 URLで共有できるようにする</button>
       <div id="publish-result" style="display:none;background:#EFF6FF;border:1.5px solid #D0E8F5;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px">
@@ -224,6 +228,25 @@ async function startGenerate(){
     a.download=(extracted.companyName||'採用')+'_採用サイト.html';
     a.click();
     setStep(3);document.getElementById('loading-area').style.display='none';document.getElementById('done-area').style.display='block';
+    // 不足情報の提案を表示
+    (function showSuggestions(d) {
+      const tips = [];
+      if (!d.ceo) tips.push('代表者名 — 信頼感が増します');
+      if (!d.founded) tips.push('設立年月 — 会社の歴史を伝えられます');
+      if (!d.employees) tips.push('従業員数 — 規模感が伝わります');
+      if (!d.sales) tips.push('売上高・実績数値 — 成長性をアピールできます');
+      if (!d.address) tips.push('所在地 — 求職者が安心します');
+      if (!(d.interview && d.interview.q1)) tips.push('社員インタビュー（Q&A） — 職場のリアルが伝わり応募率が上がります');
+      if (!(d.careerPath && d.careerPath.filter(c=>c.title).length > 0)) tips.push('キャリアパス — 入社後のイメージが明確になります');
+      if (!(d.salaryExamples && d.salaryExamples.filter(s=>s.label).length > 0)) tips.push('年収事例（例：入社2年・28歳・年収450万円） — 具体性が増します');
+      if (!(d.services && d.services.filter(s=>s.title).length > 1)) tips.push('提供サービスの詳細 — 事業の幅が伝わります');
+      if (tips.length > 0) {
+        const panel = document.getElementById('suggestions-panel');
+        const list = document.getElementById('suggestions-list');
+        list.innerHTML = tips.map(t => `<li style="padding:3px 0;border-bottom:1px solid #D6E8FA">✚ ${t}</li>`).join('');
+        panel.style.display = 'block';
+      }
+    })(extracted);
   }catch(e){showError('サイト生成エラー: '+e.message);}
 }
 
