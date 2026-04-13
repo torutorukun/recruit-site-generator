@@ -825,7 +825,7 @@ ${hasOverview ? `
           ].filter(([,v]) => v && v.trim()).map(([k,v]) =>
             `<tr><td>${k}</td><td>${v}</td></tr>`
           ).join('')}
-          ${e.ceoNote && e.ceoNote.trim() ? `<tr><td>代表者情報</td><td><span style="display:inline-block;background:var(--primary);color:#fff;font-size:0.78rem;padding:2px 10px;border-radius:20px;font-weight:600;">${e.ceoNote}</span></td></tr>` : ''}
+          ${e.companyNote && e.companyNote.trim() ? `<tr><td>特記事項</td><td style="color:var(--text-black);font-size:0.9rem;">${e.companyNote}</td></tr>` : ''}
         </tbody>
       </table>
       <div class="overview-photo fade-up delay-1">
@@ -844,7 +844,7 @@ ${hasOverview ? `
         ].filter(([,v]) => v && v.trim()).map(([k,v]) =>
           `<tr><td>${k}</td><td>${v}</td></tr>`
         ).join('')}
-        ${e.ceoNote && e.ceoNote.trim() ? `<tr><td>代表者情報</td><td><span style="display:inline-block;background:var(--primary);color:#fff;font-size:0.78rem;padding:2px 10px;border-radius:20px;font-weight:600;">${e.ceoNote}</span></td></tr>` : ''}
+        ${e.companyNote && e.companyNote.trim() ? `<tr><td>特記事項</td><td style="color:var(--text-black);font-size:0.9rem;">${e.companyNote}</td></tr>` : ''}
       </tbody>
     </table>`}
   </div>
