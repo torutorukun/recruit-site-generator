@@ -1050,26 +1050,26 @@ ${hasWorkstyle ? `
 ` : ''}
 
 <!-- 数字で見る会社 -->
-\${hasNumbers ? \`
+${hasNumbers ? `
 <section id="numbers" style="background:var(--stone-01)">
   <div class="container">
     <div class="section-header">
       <span class="section-eyebrow fade-up">Numbers</span>
-      <h2 class="section-title fade-up delay-1">数字で見る\${shortName}</h2>
+      <h2 class="section-title fade-up delay-1">数字で見る${shortName}</h2>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px;margin-top:48px">
-      \${numbers.map((n,i) => \`
-      <div class="fade-up" style="text-align:center;transition-delay:\${i*0.1}s">
-        <div style="font-family:var(--font-serif);font-size:52px;font-weight:700;color:var(--navy);line-height:1">\${n.value}</div>
-        <div style="font-size:14px;color:var(--text-grey);margin-top:4px">\${n.unit}</div>
-        <div style="font-size:13px;color:var(--text-grey);margin-top:8px;letter-spacing:0.05em">\${n.label}</div>
-      </div>\`).join('')}
+      ${numbers.map((n,i) => `
+      <div class="fade-up" style="text-align:center;transition-delay:${i*0.1}s">
+        <div style="font-family:var(--font-serif);font-size:52px;font-weight:700;color:var(--navy);line-height:1">${n.value}</div>
+        <div style="font-size:14px;color:var(--text-grey);margin-top:4px">${n.unit}</div>
+        <div style="font-size:13px;color:var(--text-grey);margin-top:8px;letter-spacing:0.05em">${n.label}</div>
+      </div>`).join('')}
     </div>
   </div>
-</section>\` : ''}
+</section>` : ''}
 
 <!-- FAQ -->
-\${hasFaq ? \`
+${hasFaq ? `
 <section id="faq">
   <div class="container">
     <div class="section-header">
@@ -1077,38 +1077,38 @@ ${hasWorkstyle ? `
       <h2 class="section-title fade-up delay-1">よくある質問</h2>
     </div>
     <div style="max-width:720px;margin-top:48px">
-      \${faq.map((f,i) => \`
-      <div class="fade-up" style="border-bottom:1px solid var(--border);padding:24px 0;transition-delay:\${i*0.06}s">
+      ${faq.map((f,i) => `
+      <div class="fade-up" style="border-bottom:1px solid var(--border);padding:24px 0;transition-delay:${i*0.06}s">
         <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:12px">
           <span style="background:var(--navy);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;flex-shrink:0">Q</span>
-          <p style="font-weight:700;font-size:15px;margin:0">\${f.q}</p>
+          <p style="font-weight:700;font-size:15px;margin:0">${f.q}</p>
         </div>
         <div style="display:flex;gap:16px;align-items:flex-start">
           <span style="background:var(--blue);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;flex-shrink:0">A</span>
-          <p style="font-size:15px;color:var(--text-grey);margin:0;line-height:1.7">\${f.a}</p>
+          <p style="font-size:15px;color:var(--text-grey);margin:0;line-height:1.7">${f.a}</p>
         </div>
-      </div>\`).join('')}
+      </div>`).join('')}
     </div>
   </div>
-</section>\` : ''}
+</section>` : ''}
 
 <!-- アクセス -->
-\${mapUrl ? \`
+${mapUrl ? `
 <section id="access" style="background:var(--stone-01)">
   <div class="container">
     <div class="section-header">
       <span class="section-eyebrow fade-up">Access</span>
       <h2 class="section-title fade-up delay-1">アクセス</h2>
     </div>
-    <p class="fade-up" style="color:var(--text-grey);margin-bottom:24px">\${e.address}</p>
+    <p class="fade-up" style="color:var(--text-grey);margin-bottom:24px">${e.address}</p>
     <div class="fade-up" style="border-radius:12px;overflow:hidden;height:360px">
-      <iframe src="\${mapUrl}" width="100%" height="100%" style="border:0" allowfullscreen loading="lazy"></iframe>
+      <iframe src="${mapUrl}" width="100%" height="100%" style="border:0" allowfullscreen loading="lazy"></iframe>
     </div>
   </div>
-</section>\` : ''}
+</section>` : ''}
 
 <!-- SNS -->
-\${hasSns ? \`
+${hasSns ? `
 <section id="sns">
   <div class="container" style="text-align:center">
     <div class="section-header">
@@ -1116,13 +1116,13 @@ ${hasWorkstyle ? `
       <h2 class="section-title fade-up delay-1">SNS・公式アカウント</h2>
     </div>
     <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:40px">
-      \${e.sns.instagram ? \`<a href="\${e.sns.instagram}" target="_blank" class="fade-up" style="display:flex;align-items:center;gap:8px;padding:12px 24px;border:1.5px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text-black);font-size:14px;font-weight:700">Instagram</a>\` : ''}
-      \${e.sns.twitter ? \`<a href="\${e.sns.twitter}" target="_blank" class="fade-up" style="display:flex;align-items:center;gap:8px;padding:12px 24px;border:1.5px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text-black);font-size:14px;font-weight:700">X（旧Twitter）</a>\` : ''}
-      \${e.sns.youtube ? \`<a href="\${e.sns.youtube}" target="_blank" class="fade-up" style="display:flex;align-items:center;gap:8px;padding:12px 24px;border:1.5px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text-black);font-size:14px;font-weight:700">YouTube</a>\` : ''}
-      \${e.sns.line ? \`<a href="\${e.sns.line}" target="_blank" class="fade-up" style="display:flex;align-items:center;gap:8px;padding:12px 24px;border:1.5px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text-black);font-size:14px;font-weight:700">LINE公式</a>\` : ''}
+      ${e.sns.instagram ? `<a href="${e.sns.instagram}" target="_blank" class="fade-up" style="display:flex;align-items:center;gap:8px;padding:12px 24px;border:1.5px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text-black);font-size:14px;font-weight:700">Instagram</a>` : ''}
+      ${e.sns.twitter ? `<a href="${e.sns.twitter}" target="_blank" class="fade-up" style="display:flex;align-items:center;gap:8px;padding:12px 24px;border:1.5px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text-black);font-size:14px;font-weight:700">X（旧Twitter）</a>` : ''}
+      ${e.sns.youtube ? `<a href="${e.sns.youtube}" target="_blank" class="fade-up" style="display:flex;align-items:center;gap:8px;padding:12px 24px;border:1.5px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text-black);font-size:14px;font-weight:700">YouTube</a>` : ''}
+      ${e.sns.line ? `<a href="${e.sns.line}" target="_blank" class="fade-up" style="display:flex;align-items:center;gap:8px;padding:12px 24px;border:1.5px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text-black);font-size:14px;font-weight:700">LINE公式</a>` : ''}
     </div>
   </div>
-</section>\` : ''}
+</section>` : ''}
 
 <!-- CTA -->
 <section class="cta" id="cta">
