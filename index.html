@@ -92,6 +92,14 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
       <label>③ IndeedのURL <span style="color:#7A8AAA;font-weight:400">（任意・応募ボタンのリンク先になります）</span></label>
       <input type="text" id="indeed-url" placeholder="https://jp.indeed.com/...">
     </div>
+    <div class="form-group">
+      <label>tldv・商談録画のリンク <span style="font-size:11px;color:#7A8AAA">（任意・会話内容から情報を補完します）</span></label>
+      <input type="text" id="tldv-url" placeholder="https://tldv.io/... または録画URL">
+    </div>
+    <div class="form-group">
+      <label>補足情報 <span style="font-size:11px;color:#7A8AAA">（任意・Indeed以外で伝えたいこと・会社の特徴など自由に）</span></label>
+      <textarea id="extra-info" style="min-height:80px" placeholder="例：平均年齢28歳、創業5年で売上3倍成長、社長がYouTubeで発信中、など何でも"></textarea>
+    </div>
     <div class="section">
       <label>④ 写真アップロード <span style="color:#7A8AAA;font-weight:400">（任意）</span></label>
       <div class="photos" id="photo-grid"></div>
@@ -207,7 +215,7 @@ async function startGenerate(){
   for(let i=1;i<=4;i++){
     if(i>1){document.getElementById('loading-msg').textContent=`混雑中... リトライ ${i}/4`;await sleep(3000*i);}
     try{
-      const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,password:pw,hpUrl:url})});
+      const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,password:pw,hpUrl:url,tldvUrl:document.getElementById('tldv-url').value.trim(),extraInfo:document.getElementById('extra-info').value.trim()})});
       const j=await r.json();
       if(j.error&&j.error.toLowerCase().includes('overload')&&i<4)continue;
       if(j.error)throw new Error(j.error);
@@ -252,7 +260,7 @@ async function startGenerate(){
 
 function showError(msg){document.getElementById('loading-area').style.display='none';document.getElementById('form-area').style.display='block';document.getElementById('error-box').style.display='block';document.getElementById('error-box').textContent=msg;setStep(1);}
 function setStep(n){[1,2,3].forEach(i=>{const el=document.getElementById('s'+i);el.className='step'+(i===n?' active':i<n?' done-step':'');el.querySelector('.step-dot').textContent=i<n?'✓':i;});}
-function reset(){lastGeneratedHtml=null;document.getElementById('publish-btn').textContent='🔗 URLで共有できるようにする';document.getElementById('publish-btn').disabled=false;document.getElementById('publish-result').style.display='none';document.getElementById('done-area').style.display='none';document.getElementById('form-area').style.display='block';document.getElementById('indeed-text').value='';document.getElementById('hp-url').value='';document.getElementById('indeed-url').value='';document.getElementById('char-count').textContent='0文字';Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
+function reset(){lastGeneratedHtml=null;document.getElementById('publish-btn').textContent='🔗 URLで共有できるようにする';document.getElementById('publish-btn').disabled=false;document.getElementById('publish-result').style.display='none';document.getElementById('done-area').style.display='none';document.getElementById('form-area').style.display='block';document.getElementById('indeed-text').value='';document.getElementById('hp-url').value='';document.getElementById('indeed-url').value='';document.getElementById('tldv-url').value='';document.getElementById('extra-info').value='';document.getElementById('char-count').textContent='0文字';Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
 let lastGeneratedHtml = null;
