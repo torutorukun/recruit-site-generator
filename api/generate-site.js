@@ -27,6 +27,14 @@ module.exports = async (req, res) => {
   // ★ indeedUrl を使う
   const indeedUrl = e.indeedUrl || '#';
 
+  // セクション表示判定フラグ
+  const hasOverview = !!(e.address || e.ceo || e.founded || e.employees || e.sales);
+  const hasBusiness = !!(e.bizHeadline || services.length > 0 || (e.biz1Title && e.biz1Body));
+  const hasCompensation = !!((sMin && sMax) || vc.length >= 1);
+  const hasCulture = !!(e.cultureDesc || e.cultureVal1 || e.cultureVal2);
+  const hasWanted = wantedList.length > 0;
+  const hasWorkstyle = !!(e.workHours || e.workLocation || holidays.length > 0 || benefits.length > 0);
+
   const html = `<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -760,11 +768,11 @@ footer {
     <span class="nav-name">${shortName}</span>
   </a>
   <ul class="nav-links">
-    <li><a href="#overview">会社概要</a></li>
-    <li><a href="#business">事業紹介</a></li>
-    ${sMin || vc.length ? `<li><a href="#compensation">待遇</a></li>` : ''}
-    <li><a href="#culture">カルチャー</a></li>
-    <li><a href="#workstyle">働き方</a></li>
+    ${hasOverview ? `<li><a href="#overview">会社概要</a></li>` : ''}
+    ${hasBusiness ? `<li><a href="#business">事業紹介</a></li>` : ''}
+    ${hasCompensation ? `<li><a href="#compensation">待遇</a></li>` : ''}
+    ${hasCulture ? `<li><a href="#culture">カルチャー</a></li>` : ''}
+    ${hasWorkstyle ? `<li><a href="#workstyle">働き方</a></li>` : ''}
   </ul>
   <a href="${indeedUrl}" target="_blank" class="nav-cta">応募する</a>
 </nav>
@@ -787,6 +795,7 @@ footer {
 </div>
 
 <!-- 会社概要 -->
+${hasOverview ? `
 <section class="overview" id="overview">
   <div class="container">
     <div class="section-header">
@@ -829,8 +838,10 @@ footer {
     </table>`}
   </div>
 </section>
+` : ''}
 
 <!-- 事業紹介 -->
+${hasBusiness ? `
 <section id="business">
   <div class="container">
     <div class="section-header">
@@ -879,6 +890,7 @@ footer {
     </div>`}` : ''}
   </div>
 </section>
+` : ''}
 
 <!-- 報酬・評価 -->
 ${(sMin && sMax) || vc.length >= 1 ? `
@@ -916,6 +928,7 @@ ${(sMin && sMax) || vc.length >= 1 ? `
 </section>` : ''}
 
 <!-- カルチャー -->
+${hasCulture ? `
 <section id="culture">
   <div class="container">
     <div class="section-header">
@@ -946,6 +959,7 @@ ${(sMin && sMax) || vc.length >= 1 ? `
     </div>`}
   </div>
 </section>
+` : ''}
 
 <!-- 求める人物像 -->
 ${wantedList.length > 0 ? `
@@ -1000,6 +1014,7 @@ ${hasIV ? `
 </section>` : ''}
 
 <!-- 働き方 -->
+${hasWorkstyle ? `
 <section id="workstyle">
   <div class="container">
     <div class="section-header">
@@ -1026,6 +1041,7 @@ ${hasIV ? `
     </div>` : ''}
   </div>
 </section>
+` : ''}
 
 <!-- CTA -->
 <section class="cta" id="cta">
