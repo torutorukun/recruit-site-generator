@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
   const indeedUrl = e.indeedUrl || '#';
 
   // セクション表示判定フラグ
-  const hasOverview = !!(e.address || e.ceo || e.founded || e.employees || e.sales);
+  const hasOverview = !!(e.address || e.ceo || e.founded || e.sales);
   const hasBusiness = !!(e.bizHeadline || services.length > 0 || (e.biz1Title && e.biz1Body));
   const hasCompensation = !!((sMin && sMax) || vc.length >= 1);
   const hasCulture = !!(e.cultureDesc || e.cultureVal1 || e.cultureVal2);
@@ -825,6 +825,7 @@ ${hasOverview ? `
           ].filter(([,v]) => v && v.trim()).map(([k,v]) =>
             `<tr><td>${k}</td><td>${v}</td></tr>`
           ).join('')}
+          ${e.ceoNote && e.ceoNote.trim() ? `<tr><td>代表者情報</td><td><span style="display:inline-block;background:var(--primary);color:#fff;font-size:0.78rem;padding:2px 10px;border-radius:20px;font-weight:600;">${e.ceoNote}</span></td></tr>` : ''}
         </tbody>
       </table>
       <div class="overview-photo fade-up delay-1">
@@ -843,6 +844,7 @@ ${hasOverview ? `
         ].filter(([,v]) => v && v.trim()).map(([k,v]) =>
           `<tr><td>${k}</td><td>${v}</td></tr>`
         ).join('')}
+        ${e.ceoNote && e.ceoNote.trim() ? `<tr><td>代表者情報</td><td><span style="display:inline-block;background:var(--primary);color:#fff;font-size:0.78rem;padding:2px 10px;border-radius:20px;font-weight:600;">${e.ceoNote}</span></td></tr>` : ''}
       </tbody>
     </table>`}
   </div>
@@ -1103,7 +1105,7 @@ ${mapUrl ? `
       <span class="section-eyebrow fade-up">Access</span>
       <h2 class="section-title fade-up delay-1">アクセス</h2>
     </div>
-    <p class="fade-up" style="color:var(--text-grey);margin-bottom:24px">${e.address}</p>
+    <p class="fade-up" style="color:var(--text-grey);margin-bottom:24px">${mapLabel}</p>
     <div class="fade-up" style="border-radius:12px;overflow:hidden;height:360px">
       <iframe src="${mapUrl}" width="100%" height="100%" style="border:0" allowfullscreen loading="lazy"></iframe>
     </div>
