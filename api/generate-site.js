@@ -39,7 +39,10 @@ module.exports = async (req, res) => {
   const hasSns = !!(e.sns && (e.sns.instagram || e.sns.twitter || e.sns.youtube || e.sns.line));
   const hasNumbers = numbers.length > 0;
   const hasFaq = faq.length > 0;
-  const mapUrl = e.address ? 'https://maps.google.com/maps?q=' + encodeURIComponent(e.address) + '&output=embed' : '';
+  const locations = (e.locations || []).filter(l => l.address && l.address.trim());
+  const mapQuery = e.workLocation || (locations.length > 0 ? locations[0].address : '') || e.address || '';
+  const mapUrl = mapQuery ? 'https://maps.google.com/maps?q=' + encodeURIComponent(mapQuery) + '&output=embed' : '';
+  const mapLabel = e.workLocation || e.address || '';
 
   const html = `<!DOCTYPE html>
 <html lang="ja">
