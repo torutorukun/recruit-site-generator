@@ -946,7 +946,7 @@ footer {
     ${hasWorkstyle ? `<li><a href="#workstyle">働き方</a></li>` : ''}
     ${hasSelection ? `<li><a href="#selection">選考</a></li>` : ''}
   </ul>
-  <a href="${indeedUrl}" target="_blank" class="nav-cta">応募する</a>
+  <a href="${e.applyUrl || indeedUrl}" target="_blank" class="nav-cta">応募する</a>
 </nav>
 
 <!-- ヒーロー -->
@@ -1403,9 +1403,8 @@ ${hasSns ? `
 <section class="cta" id="cta">
   <h2 class="fade-up">${cn}で、<br>一緒に働きませんか？</h2>
   <p class="fade-up delay-1">まずはカジュアルにお話しましょう。</p>
-  ${e.applyUrl ? `<a href="${e.applyUrl}" target="_blank" class="cta-btn fade-up delay-2" style="margin-right:12px">応募フォームへ</a>` : ''}
-  ${e.applyEmail ? `<a href="mailto:${e.applyEmail}" class="cta-btn fade-up delay-2" style="background:transparent;border:1.5px solid rgba(255,255,255,0.4);margin-right:12px">メールで問い合わせ</a>` : ''}
-  <a href="${indeedUrl}" target="_blank" class="cta-btn fade-up delay-3" style="${(e.applyUrl || e.applyEmail) ? 'background:rgba(255,255,255,0.15);' : ''}">Indeedで応募する</a>
+<a href="${e.applyUrl || indeedUrl}" target="_blank" class="cta-btn fade-up delay-2">応募する</a>
+  ${e.applyEmail ? `<a href="mailto:${e.applyEmail}" class="cta-btn fade-up delay-3" style="background:transparent;border:1.5px solid rgba(255,255,255,0.4);margin-left:12px">メールで問い合わせ</a>` : ''}
 </section>
 
 <footer>
