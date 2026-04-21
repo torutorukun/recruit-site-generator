@@ -91,7 +91,7 @@ async function fetchPage(url) {
   try {
     const res = await fetch(url, {
       headers: {'User-Agent':'Mozilla/5.0 (compatible; RecruitBot/1.0)'},
-      signal: AbortSignal.timeout(6000),
+      signal: AbortSignal.timeout(4000),
     });
     if (!res.ok) return null;
     const html = await res.text();
@@ -102,7 +102,7 @@ async function fetchPage(url) {
 
 async function fetchCompanyPages(baseUrl) {
   const base = baseUrl.replace(/\/$/, '');
-  const paths = ['','/company','/about','/corporate','/profile','/company/overview','/about/company','/recruit','/access','/location','/locations','/office','/contact','/store','/shop','/branch'];
+  const paths = ['', '/about', '/company', '/recruit', '/access'];
   const results = await Promise.allSettled(paths.map(p => fetchPage(base + p)));
   const seen = new Set();
   const combined = [];

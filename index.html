@@ -86,6 +86,10 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
   <div id="error-box" class="error" style="display:none"></div>
 
   <div id="form-area">
+  <div id="restore-notice" style="display:none;background:#FFF8E1;border:1.5px solid #FFD54F;border-radius:10px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#7A6000;display:flex;align-items:center;justify-content:space-between">
+    <span>📋 前回の入力内容を復元しました</span>
+    <button onclick="clearDraft()" style="background:none;border:none;color:#7A6000;font-size:11px;cursor:pointer;text-decoration:underline">クリア</button>
+  </div>
     <div class="section">
       <label>🎨 カラーテーマ <span style="color:#7A8AAA;font-weight:400">（サイトの雰囲気を選んでください）</span></label>
       <div class="theme-grid">
@@ -278,6 +282,53 @@ function selectTheme(t){
   document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('selected'));
   document.getElementById('theme-'+t).classList.add('selected');
 }
+
+// 入力内容を自動保存・復元
+const SAVE_FIELDS = [
+  'indeed-text','hp-url','indeed-url','tldv-url',
+  'ceo-message','mission-future','challenges','job-types',
+  'selection-process','day-schedule','salary-examples',
+  'nearest-station','phone-number','apply-url','employee-count',
+  'founded-date','sales-info','iv-person',
+  'iv-q1','iv-a1','iv-q2','iv-a2','iv-q3','iv-a3','extra-info'
+];
+
+function clearDraft() {
+  localStorage.removeItem('recruit-form-draft');
+  document.getElementById('restore-notice').style.display = 'none';
+}
+function saveInputs() {
+  const data = {};
+  SAVE_FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  });
+  data['selected-theme'] = selectedTheme;
+  localStorage.setItem('recruit-form-draft', JSON.stringify(data));
+}
+
+function restoreInputs() {
+  try {
+    const saved = localStorage.getItem('recruit-form-draft');
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    SAVE_FIELDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && data[id]) el.value = data[id];
+    });
+    if (data['selected-theme']) selectTheme(data['selected-theme']);
+    const charCount = document.getElementById('indeed-text');
+    if (charCount) document.getElementById('char-count').textContent = charCount.value.length + '文字';
+    if (saved && JSON.parse(saved)['indeed-text']) {
+      document.getElementById('restore-notice').style.display = 'block';
+    }
+  } catch(e) {}
+}
+
+// 入力のたびに自動保存
+document.addEventListener('input', saveInputs);
+window.addEventListener('load', restoreInputs);
+
 const SLOTS=[{id:'logo',label:'会社ロゴ',hint:'PNG推奨・透過背景'},{id:'cover',label:'表紙写真',hint:'オフィス外観・チーム集合'},{id:'company',label:'会社概要写真',hint:'代表者・オフィス内観'},{id:'biz1',label:'事業①写真',hint:'業務風景・サービス紹介'},{id:'biz2',label:'事業②写真',hint:'現場・授業風景など'},{id:'member',label:'社員インタビュー',hint:'インタビュー対象者'},{id:'culture',label:'チーム写真',hint:'チーム・社内イベント'}];
 const photos={};
 
@@ -454,7 +505,8 @@ function reset(){lastGeneratedHtml=null;document.getElementById('publish-btn').t
   document.getElementById('iv-a2').value='';
   document.getElementById('iv-q3').value='';
   document.getElementById('iv-a3').value='';document.getElementById('char-count').textContent='0文字';
-  selectTheme('navy');Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
+  selectTheme('navy');
+  clearDraft();Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
 let lastGeneratedHtml = null;
