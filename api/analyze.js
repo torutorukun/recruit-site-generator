@@ -147,7 +147,8 @@ module.exports = async function(req, res) {
   const { text, password, hpUrl, tldvUrl, extraInfo,
     ceoMessage, missionFuture, challengesText, jobTypesText,
     selectionText, dayScheduleText, salaryExamplesText,
-    nearestStation, phoneNumber, applyUrl, employeeCount } = req.body;
+    nearestStation, phoneNumber, applyUrl, employeeCount,
+    foundedDate, salesInfo, ivPerson, ivQ1, ivA1, ivQ2, ivA2, ivQ3, ivA3 } = req.body;
   if (password !== process.env.APP_PASSWORD) return res.status(401).json({error: 'パスワードが違います'});
   if (!text || text.trim().length < 50) return res.status(400).json({error: '求人原稿が短すぎます'});
 
