@@ -156,7 +156,7 @@ module.exports = async function(req, res) {
   const companyNameGuess = nameMatch ? nameMatch[0] : '';
 
   const [siteText, kokuzeiData] = await Promise.all([
-    hpUrl && hpUrl.startsWith('http') ? fetchCompanyPages(hpUrl) : Promise.resolve(null),
+    Promise.resolve(null),
     fetchKokuzeicho(companyNameGuess),
   ]);
 
