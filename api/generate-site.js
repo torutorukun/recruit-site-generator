@@ -1051,6 +1051,7 @@ ${hasOverview ? `
           ].filter(([,v]) => v && v.trim()).map(([k,v]) =>
             `<tr><td>${k}</td><td>${v}</td></tr>`
           ).join('')}
+          ${e.phoneNumber && e.phoneNumber.trim() ? `<tr><td>電話番号</td><td>${e.phoneNumber}</td></tr>` : ''}
           ${e.companyNote && e.companyNote.trim() ? `<tr><td>特記事項</td><td style="color:var(--text-black);font-size:0.9rem;">${e.companyNote}</td></tr>` : ''}
         </tbody>
       </table>
@@ -1070,6 +1071,7 @@ ${hasOverview ? `
         ].filter(([,v]) => v && v.trim()).map(([k,v]) =>
           `<tr><td>${k}</td><td>${v}</td></tr>`
         ).join('')}
+        ${e.phoneNumber && e.phoneNumber.trim() ? `<tr><td>電話番号</td><td>${e.phoneNumber}</td></tr>` : ''}
         ${e.companyNote && e.companyNote.trim() ? `<tr><td>特記事項</td><td style="color:var(--text-black);font-size:0.9rem;">${e.companyNote}</td></tr>` : ''}
       </tbody>
     </table>`}

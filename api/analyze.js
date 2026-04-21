@@ -27,6 +27,7 @@ const SYSTEM_PROMPT = `あなたは採用ピッチ資料の専門家です。提
   "selectionProcess": ["選考ステップ1（書類選考など）","ステップ2","ステップ3","ステップ4"],
   "daySchedule": [{"time":"9:00","activity":"出社・朝礼など（提供情報にある場合のみ）"},{"time":"","activity":""},{"time":"","activity":""},{"time":"","activity":""},{"time":"","activity":""}],
   "applyUrl": "応募フォームURL（なければ空文字）",
+  "phoneNumber": "電話番号（なければ空文字）",
   "applyEmail": "応募先メールアドレス（なければ空文字）",
   "companyNote": "会社・事業に関する特記事項（補足情報にある将来計画・社長YouTube出演・その他ハイライト等。なければ空文字）",
   "business": "事業内容一行",
@@ -143,7 +144,10 @@ module.exports = async function(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({error: 'Method not allowed'});
 
-  const { text, password, hpUrl, tldvUrl, extraInfo } = req.body;
+  const { text, password, hpUrl, tldvUrl, extraInfo,
+    ceoMessage, missionFuture, challengesText, jobTypesText,
+    selectionText, dayScheduleText, salaryExamplesText,
+    nearestStation, phoneNumber, applyUrl, employeeCount } = req.body;
   if (password !== process.env.APP_PASSWORD) return res.status(401).json({error: 'パスワードが違います'});
   if (!text || text.trim().length < 50) return res.status(400).json({error: '求人原稿が短すぎます'});
 
@@ -164,6 +168,17 @@ module.exports = async function(req, res) {
     if (kokuzeiData.founded) userContent += `登記日: ${kokuzeiData.founded}\n`;
   }
   if (extraInfo && extraInfo.trim()) userContent += `\n\n【担当者からの補足情報（必ず反映すること）】\n${extraInfo}`;
+  if (ceoMessage && ceoMessage.trim()) userContent += `\n\n【代表メッセージ（ceoMessageフィールドにそのまま使うこと）】\n${ceoMessage}`;
+  if (missionFuture && missionFuture.trim()) userContent += `\n\n【目指す未来・ビジョン（missionFutureフィールドに使うこと）】\n${missionFuture}`;
+  if (challengesText && challengesText.trim()) userContent += `\n\n【取り組む課題（改行区切りでchallenges配列に入れること）】\n${challengesText}`;
+  if (jobTypesText && jobTypesText.trim()) userContent += `\n\n【募集職種（「職種名｜説明」形式。jobTypes配列に入れること）】\n${jobTypesText}`;
+  if (selectionText && selectionText.trim()) userContent += `\n\n【選考フロー（「→」区切りでselectionProcess配列に入れること）】\n${selectionText}`;
+  if (dayScheduleText && dayScheduleText.trim()) userContent += `\n\n【1日の流れ（「時刻｜内容」形式でdaySchedule配列に入れること）】\n${dayScheduleText}`;
+  if (salaryExamplesText && salaryExamplesText.trim()) userContent += `\n\n【実際の年収事例（salaryExamples配列に入れること）】\n${salaryExamplesText}`;
+  if (nearestStation && nearestStation.trim()) userContent += `\n\n【最寄り駅・アクセス（workLocationに追記すること）】\n${nearestStation}`;
+  if (phoneNumber && phoneNumber.trim()) userContent += `\n\n【電話番号（phoneNumberフィールドに入れること）】\n${phoneNumber}`;
+  if (applyUrl && applyUrl.trim()) userContent += `\n\n【応募フォームURL（applyUrlフィールドに入れること）】\n${applyUrl}`;
+  if (employeeCount && employeeCount.trim()) userContent += `\n\n【従業員数（employeesフィールドではなくnumbersのラベル'スタッフ数'として入れること）】\n${employeeCount}`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
