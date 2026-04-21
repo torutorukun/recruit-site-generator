@@ -179,6 +179,15 @@ module.exports = async function(req, res) {
   if (phoneNumber && phoneNumber.trim()) userContent += `\n\n【電話番号（phoneNumberフィールドに入れること）】\n${phoneNumber}`;
   if (applyUrl && applyUrl.trim()) userContent += `\n\n【応募フォームURL（applyUrlフィールドに入れること）】\n${applyUrl}`;
   if (employeeCount && employeeCount.trim()) userContent += `\n\n【従業員数（employeesフィールドではなくnumbersのラベル'スタッフ数'として入れること）】\n${employeeCount}`;
+  if (foundedDate && foundedDate.trim()) userContent += `\n\n【設立年月（foundedフィールドに使うこと・国税庁データより優先）】\n${foundedDate}`;
+  if (salesInfo && salesInfo.trim()) userContent += `\n\n【売上高・実績数値（salesフィールドと、numbersにも使うこと）】\n${salesInfo}`;
+  if (ivPerson && ivPerson.trim()) {
+    userContent += `\n\n【社員インタビュー（interviewフィールドにそのまま入れること）】\n`;
+    userContent += `person: ${ivPerson}\n`;
+    if (ivQ1) userContent += `q1: ${ivQ1}\na1: ${ivA1}\n`;
+    if (ivQ2) userContent += `q2: ${ivQ2}\na2: ${ivA2}\n`;
+    if (ivQ3) userContent += `q3: ${ivQ3}\na3: ${ivA3}\n`;
+  }
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {

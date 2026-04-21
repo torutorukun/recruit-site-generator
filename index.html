@@ -146,6 +146,47 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
       <input type="text" id="employee-count" placeholder="例：32名（2024年4月現在）">
     </div>
     <div class="form-group">
+      <label>設立年月 <span style="font-size:11px;color:#7A8AAA">（正確な設立年月がわかれば）</span></label>
+      <input type="text" id="founded-date" placeholder="例：2018年4月">
+    </div>
+    <div class="form-group">
+      <label>売上高・実績数値 <span style="font-size:11px;color:#7A8AAA">（アピールできる数字があれば）</span></label>
+      <textarea id="sales-info" style="min-height:60px" placeholder="例：&#10;年商3億円（前年比150%成長）&#10;支援企業500社以上&#10;顧客満足度98%"></textarea>
+    </div>
+
+    <div style="border-top:1.5px solid #D0E8F5;margin:20px 0 16px;"></div>
+    <p style="font-size:12px;font-weight:700;color:#1B7EC4;letter-spacing:0.08em;margin-bottom:16px">▼ 社員インタビュー（あれば大幅にサイトのリアル感が増します）</p>
+
+    <div class="form-group">
+      <label>インタビュー対象者 <span style="font-size:11px;color:#7A8AAA">（名前・役職など）</span></label>
+      <input type="text" id="iv-person" placeholder="例：田中 花子（入社3年目・採用ディレクター）">
+    </div>
+    <div class="form-group">
+      <label>Q1 <span style="font-size:11px;color:#7A8AAA">（質問）</span></label>
+      <input type="text" id="iv-q1" placeholder="例：入社のきっかけを教えてください">
+    </div>
+    <div class="form-group">
+      <label>A1 <span style="font-size:11px;color:#7A8AAA">（回答）</span></label>
+      <textarea id="iv-a1" style="min-height:60px" placeholder="例：前職では営業をしていましたが、採用に関わる仕事がしたくて転職しました。未経験でも挑戦できる環境が決め手です。"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Q2</label>
+      <input type="text" id="iv-q2" placeholder="例：仕事のやりがいは？">
+    </div>
+    <div class="form-group">
+      <label>A2</label>
+      <textarea id="iv-a2" style="min-height:60px" placeholder="例：クライアントの採用が決まったときの喜びは格別です。"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Q3</label>
+      <input type="text" id="iv-q3" placeholder="例：どんな人と一緒に働きたいですか？">
+    </div>
+    <div class="form-group">
+      <label>A3</label>
+      <textarea id="iv-a3" style="min-height:60px" placeholder="例：素直に学び続けられる方。スキルより姿勢を大切にしています。"></textarea>
+    </div>
+
+    <div class="form-group">
       <label>その他・補足情報 <span style="font-size:11px;color:#7A8AAA">（上記以外で伝えたいこと・会社の特徴など）</span></label>
       <textarea id="extra-info" style="min-height:60px" placeholder="例：平均年齢28歳、創業5年で売上3倍成長、社長がYouTubeで発信中、など何でも"></textarea>
     </div>
@@ -278,7 +319,16 @@ async function startGenerate(){
     nearestStation:document.getElementById('nearest-station').value.trim(),
     phoneNumber:document.getElementById('phone-number').value.trim(),
     applyUrl:document.getElementById('apply-url').value.trim(),
-    employeeCount:document.getElementById('employee-count').value.trim()
+    employeeCount:document.getElementById('employee-count').value.trim(),
+    foundedDate:document.getElementById('founded-date').value.trim(),
+    salesInfo:document.getElementById('sales-info').value.trim(),
+    ivPerson:document.getElementById('iv-person').value.trim(),
+    ivQ1:document.getElementById('iv-q1').value.trim(),
+    ivA1:document.getElementById('iv-a1').value.trim(),
+    ivQ2:document.getElementById('iv-q2').value.trim(),
+    ivA2:document.getElementById('iv-a2').value.trim(),
+    ivQ3:document.getElementById('iv-q3').value.trim(),
+    ivA3:document.getElementById('iv-a3').value.trim()
   })});
       const j=await r.json();
       if(j.error&&j.error.toLowerCase().includes('overload')&&i<4)continue;
@@ -335,7 +385,16 @@ function reset(){lastGeneratedHtml=null;document.getElementById('publish-btn').t
   document.getElementById('nearest-station').value='';
   document.getElementById('phone-number').value='';
   document.getElementById('apply-url').value='';
-  document.getElementById('employee-count').value='';document.getElementById('char-count').textContent='0文字';Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
+  document.getElementById('employee-count').value='';
+  document.getElementById('founded-date').value='';
+  document.getElementById('sales-info').value='';
+  document.getElementById('iv-person').value='';
+  document.getElementById('iv-q1').value='';
+  document.getElementById('iv-a1').value='';
+  document.getElementById('iv-q2').value='';
+  document.getElementById('iv-a2').value='';
+  document.getElementById('iv-q3').value='';
+  document.getElementById('iv-a3').value='';document.getElementById('char-count').textContent='0文字';Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
 let lastGeneratedHtml = null;
