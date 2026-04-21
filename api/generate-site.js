@@ -26,6 +26,16 @@ module.exports = async (req, res) => {
   const hasIV = (iv.q1 && iv.q1.trim()) || (iv.q2 && iv.q2.trim()) || (iv.q3 && iv.q3.trim());
   // ★ indeedUrl を使う
   const indeedUrl = e.indeedUrl || '#';
+  const selectionProcess = (e.selectionProcess || []).filter(s => s && s.trim());
+  const daySchedule = (e.daySchedule || []).filter(d => d.time && d.activity && d.time.trim() && d.activity.trim());
+  const jobTypes = (e.jobTypes || []).filter(j => j.title && j.title.trim());
+  const challenges = (e.challenges || []).filter(c => c && c.trim());
+  const hasMessage = !!(e.ceoMessage && e.ceoMessage.trim());
+  const hasVision = !!(e.missionFuture && e.missionFuture.trim()) || challenges.length > 0;
+  const hasJobTypes = jobTypes.length > 0;
+  const hasSelection = selectionProcess.length > 0;
+  const hasDaySchedule = daySchedule.length > 0;
+  const hasApply = !!(e.applyUrl || e.applyEmail);
 
   // セクション表示判定フラグ
   const hasOverview = !!(e.address || e.ceo || e.founded || e.sales);
@@ -742,15 +752,167 @@ footer {
 }
 
 /* ── アニメーション ── */
+@keyframes countUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes lineGrow { from { width:0; } to { width:40px; } }
+@keyframes fadeSlide { from { opacity:0; transform:translateX(-16px); } to { opacity:1; transform:translateX(0); } }
 .fade-up {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
+  transform: translateY(32px);
+  transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
 }
 .fade-up.visible { opacity: 1; transform: translateY(0); }
-.fade-up.delay-1 { transition-delay: 0.1s; }
-.fade-up.delay-2 { transition-delay: 0.2s; }
-.fade-up.delay-3 { transition-delay: 0.3s; }
+.fade-up.delay-1 { transition-delay: 0.12s; }
+.fade-up.delay-2 { transition-delay: 0.24s; }
+.fade-up.delay-3 { transition-delay: 0.36s; }
+.fade-up.delay-4 { transition-delay: 0.48s; }
+.fade-left {
+  opacity: 0;
+  transform: translateX(-24px);
+  transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+.fade-left.visible { opacity: 1; transform: translateX(0); }
+.count-up { display: inline-block; }
+/* カードホバー */
+.biz-service-card:hover, .wanted-item:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); }
+.biz-service-card, .wanted-item { transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease; }
+/* セクションタイトル下線アニメ */
+.section-title-line {
+  display: block;
+  width: 0;
+  height: 3px;
+  background: var(--blue);
+  margin: 12px auto 0;
+  transition: width 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s;
+}
+.section-title-line.visible { width: 40px; }
+
+/* ── 代表メッセージ ── */
+.message-wrap { max-width: 780px; margin: 0 auto; }
+.message-body {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 2;
+  color: var(--text-black);
+  letter-spacing: 0.04em;
+  white-space: pre-line;
+  border-left: 3px solid var(--blue);
+  padding-left: var(--sp-xl);
+}
+.message-sign {
+  margin-top: var(--sp-l);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-grey);
+  letter-spacing: 0.1em;
+  padding-left: var(--sp-xl);
+}
+
+/* ── 目指す未来・課題 ── */
+.vision-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-xl); }
+.vision-future {
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 12px;
+  padding: var(--sp-3xl);
+}
+.vision-future h3 { font-family: var(--font-serif); font-size: 20px; color: var(--white); margin-bottom: var(--sp-l); }
+.vision-future p { font-size: 15px; line-height: 1.85; color: rgba(255,255,255,0.8); }
+.vision-challenges { display: flex; flex-direction: column; gap: var(--sp-m); }
+.challenge-item {
+  background: var(--stone-01);
+  border-radius: 10px;
+  padding: var(--sp-l);
+  border-left: 3px solid var(--blue);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ── 募集職種 ── */
+.job-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--sp-l); }
+.job-card {
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: var(--sp-xl);
+  transition: border-color 0.2s, box-shadow 0.3s;
+}
+.job-card:hover { border-color: var(--blue); box-shadow: 0 8px 24px rgba(27,111,190,0.1); }
+.job-card-title { font-family: var(--font-serif); font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: var(--sp-m); }
+.job-card-desc { font-size: 14px; color: var(--text-grey); line-height: 1.75; margin-bottom: var(--sp-m); }
+.job-card-cond { font-size: 12px; color: var(--text-disabled); border-top: 1px solid var(--border); padding-top: var(--sp-m); }
+
+/* ── 選考プロセス ── */
+.process-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-top: var(--sp-3xl);
+}
+.process-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-s);
+  min-width: 100px;
+}
+.process-num {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+}
+.process-label { font-size: 13px; color: var(--text-grey); letter-spacing: 0.05em; text-align: center; }
+.process-arrow {
+  font-size: 20px;
+  color: var(--blue);
+  margin: 0 var(--sp-m);
+  padding-bottom: 24px;
+}
+
+/* ── 1日の働き方 ── */
+.timeline { max-width: 640px; margin: 0 auto; position: relative; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 72px; top: 0; bottom: 0;
+  width: 1px;
+  background: var(--border);
+}
+.timeline-item {
+  display: grid;
+  grid-template-columns: 72px 16px 1fr;
+  gap: 0 var(--sp-l);
+  align-items: flex-start;
+  margin-bottom: var(--sp-xl);
+}
+.timeline-time {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  text-align: right;
+  padding-top: 2px;
+}
+.timeline-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--blue);
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+.timeline-content {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-black);
+  padding-bottom: var(--sp-m);
+}
 
 /* ── レスポンシブ ── */
 @media (max-width: 768px) {
@@ -782,6 +944,7 @@ footer {
     ${hasCompensation ? `<li><a href="#compensation">待遇</a></li>` : ''}
     ${hasCulture ? `<li><a href="#culture">カルチャー</a></li>` : ''}
     ${hasWorkstyle ? `<li><a href="#workstyle">働き方</a></li>` : ''}
+    ${hasSelection ? `<li><a href="#selection">選考</a></li>` : ''}
   </ul>
   <a href="${indeedUrl}" target="_blank" class="nav-cta">応募する</a>
 </nav>
@@ -802,6 +965,69 @@ footer {
       : `<div class="hero-right-empty"></div>`}
   </div>
 </div>
+
+<!-- 代表メッセージ -->
+${hasMessage ? `
+<section id="message" style="background:var(--stone-01)">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow fade-up">Message</span>
+      <h2 class="section-title fade-up delay-1">代表メッセージ</h2>
+    </div>
+    <div class="message-wrap fade-up delay-2">
+      <div class="message-body">${e.ceoMessage}</div>
+      ${e.ceo ? `<p class="message-sign">代表取締役　${e.ceo}</p>` : ''}
+    </div>
+  </div>
+</section>
+` : ''}
+
+<!-- 目指す未来・課題 -->
+${hasVision ? `
+<section id="vision">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow fade-up">Vision</span>
+      <h2 class="section-title fade-up delay-1">目指す未来</h2>
+    </div>
+    <div class="vision-grid">
+      ${e.missionFuture ? `
+      <div class="vision-future fade-up">
+        <h3>私たちが目指す世界</h3>
+        <p>${e.missionFuture}</p>
+      </div>` : ''}
+      ${challenges.length > 0 ? `
+      <div class="vision-challenges">
+        ${challenges.map((c,i) => `
+        <div class="challenge-item fade-up" style="transition-delay:${0.1+i*0.1}s">
+          <span style="font-size:11px;font-weight:700;letter-spacing:0.1em;color:var(--blue);display:block;margin-bottom:6px;">CHALLENGE ${String(i+1).padStart(2,'0')}</span>
+          ${c}
+        </div>`).join('')}
+      </div>` : ''}
+    </div>
+  </div>
+</section>
+` : ''}
+
+<!-- 募集職種 -->
+${hasJobTypes ? `
+<section id="jobs" style="background:var(--stone-01)">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow fade-up">Positions</span>
+      <h2 class="section-title fade-up delay-1">募集職種</h2>
+    </div>
+    <div class="job-grid">
+      ${jobTypes.map((j,i) => `
+      <div class="job-card fade-up" style="transition-delay:${i*0.1}s">
+        <div class="job-card-title">${j.title}</div>
+        ${j.desc ? `<div class="job-card-desc">${j.desc}</div>` : ''}
+        ${j.conditions ? `<div class="job-card-cond">${j.conditions}</div>` : ''}
+      </div>`).join('')}
+    </div>
+  </div>
+</section>
+` : ''}
 
 <!-- 会社概要 -->
 ${hasOverview ? `
@@ -1097,6 +1323,48 @@ ${hasFaq ? `
   </div>
 </section>` : ''}
 
+<!-- 1日の働き方 -->
+${hasDaySchedule ? `
+<section id="day" style="background:var(--stone-01)">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow fade-up">Daily</span>
+      <h2 class="section-title fade-up delay-1">1日の流れ</h2>
+    </div>
+    <div class="timeline">
+      ${daySchedule.map((d,i) => `
+      <div class="timeline-item fade-up" style="transition-delay:${i*0.08}s">
+        <div class="timeline-time">${d.time}</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">${d.activity}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+</section>
+` : ''}
+
+<!-- 選考プロセス -->
+${hasSelection ? `
+<section id="selection">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow fade-up">Process</span>
+      <h2 class="section-title fade-up delay-1">選考プロセス</h2>
+    </div>
+    <div class="process-flow">
+      ${selectionProcess.map((s,i) => `
+        <div class="process-step fade-up" style="transition-delay:${i*0.1}s">
+          <div class="process-num">${i+1}</div>
+          <div class="process-label">${s}</div>
+        </div>
+        ${i < selectionProcess.length-1 ? '<div class="process-arrow">›</div>' : ''}
+      `).join('')}
+    </div>
+    <p style="text-align:center;font-size:13px;color:var(--text-grey);margin-top:var(--sp-3xl)">※内定後も不安な点はいつでもご相談ください</p>
+  </div>
+</section>
+` : ''}
+
 <!-- アクセス -->
 ${mapUrl ? `
 <section id="access" style="background:var(--stone-01)">
@@ -1133,7 +1401,9 @@ ${hasSns ? `
 <section class="cta" id="cta">
   <h2 class="fade-up">${cn}で、<br>一緒に働きませんか？</h2>
   <p class="fade-up delay-1">まずはカジュアルにお話しましょう。</p>
-  <a href="${indeedUrl}" target="_blank" class="cta-btn fade-up delay-2">Indeedで応募する</a>
+  ${e.applyUrl ? `<a href="${e.applyUrl}" target="_blank" class="cta-btn fade-up delay-2" style="margin-right:12px">応募フォームへ</a>` : ''}
+  ${e.applyEmail ? `<a href="mailto:${e.applyEmail}" class="cta-btn fade-up delay-2" style="background:transparent;border:1.5px solid rgba(255,255,255,0.4);margin-right:12px">メールで問い合わせ</a>` : ''}
+  <a href="${indeedUrl}" target="_blank" class="cta-btn fade-up delay-3" style="${(e.applyUrl || e.applyEmail) ? 'background:rgba(255,255,255,0.15);' : ''}">Indeedで応募する</a>
 </section>
 
 <footer>
@@ -1147,6 +1417,33 @@ const obs = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.08 });
 document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+document.querySelectorAll('.fade-left').forEach(el => obs.observe(el));
+
+// セクションタイトル下線アニメ
+const lineObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.3 });
+document.querySelectorAll('.section-title-line').forEach(el => lineObs.observe(el));
+
+// カウントアップアニメーション
+function animateCount(el) {
+  const target = parseFloat(el.dataset.target);
+  const isInt = Number.isInteger(target);
+  const duration = 1800;
+  const start = performance.now();
+  const update = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 4);
+    const current = target * eased;
+    el.textContent = isInt ? Math.floor(current).toLocaleString() : current.toFixed(1);
+    if (progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+const countObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) { animateCount(e.target); countObs.unobserve(e.target); } });
+}, { threshold: 0.5 });
+document.querySelectorAll('.count-up').forEach(el => countObs.observe(el));
 
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
