@@ -22,6 +22,13 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
 .photo-empty{height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#A0B8CC;font-size:12px}
 .photo-label{padding:6px 10px;font-size:11px;font-weight:600;color:#3A4A6A}
 .photo-hint{padding:0 10px 8px;font-size:10px;color:#7A8AAA}
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.theme-card{border:2px solid #D0E8F5;border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all .2s;background:#fff}
+.theme-card:hover{border-color:#1B7EC4;transform:translateY(-1px)}
+.theme-card.selected{border-color:#1B7EC4;background:#EBF4FF}
+.theme-swatch{width:32px;height:32px;border-radius:50%;margin:0 auto 6px}
+.theme-name{font-size:12px;font-weight:700;color:#3A4A6A}
+.theme-desc{font-size:10px;color:#7A8AAA;margin-top:2px}
 .btn{display:block;width:100%;padding:14px;background:#1B7EC4;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s;margin-top:8px}
 .btn:hover{background:#1565A0}
 .btn:disabled{background:#A0B8CC;cursor:default}
@@ -79,6 +86,41 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
   <div id="error-box" class="error" style="display:none"></div>
 
   <div id="form-area">
+    <div class="section">
+      <label>🎨 カラーテーマ <span style="color:#7A8AAA;font-weight:400">（サイトの雰囲気を選んでください）</span></label>
+      <div class="theme-grid">
+        <div class="theme-card selected" onclick="selectTheme('navy')" id="theme-navy">
+          <div class="theme-swatch" style="background:#1A2B4A"></div>
+          <div class="theme-name">Navy</div>
+          <div class="theme-desc">誠実・信頼・スタンダード</div>
+        </div>
+        <div class="theme-card" onclick="selectTheme('forest')" id="theme-forest">
+          <div class="theme-swatch" style="background:#1A3D2B"></div>
+          <div class="theme-name">Forest</div>
+          <div class="theme-desc">自然・福祉・教育系</div>
+        </div>
+        <div class="theme-card" onclick="selectTheme('charcoal')" id="theme-charcoal">
+          <div class="theme-swatch" style="background:#2C2C2C"></div>
+          <div class="theme-name">Charcoal</div>
+          <div class="theme-desc">モダン・スタートアップ</div>
+        </div>
+        <div class="theme-card" onclick="selectTheme('burgundy')" id="theme-burgundy">
+          <div class="theme-swatch" style="background:#6B1A2B"></div>
+          <div class="theme-name">Burgundy</div>
+          <div class="theme-desc">高級感・ブランド</div>
+        </div>
+        <div class="theme-card" onclick="selectTheme('stone')" id="theme-stone">
+          <div class="theme-swatch" style="background:#7A6A58"></div>
+          <div class="theme-name">Stone</div>
+          <div class="theme-desc">温かみ・人材・介護系</div>
+        </div>
+        <div class="theme-card" onclick="selectTheme('indigo')" id="theme-indigo">
+          <div class="theme-swatch" style="background:#3B2D8F"></div>
+          <div class="theme-name">Indigo</div>
+          <div class="theme-desc">クリエイティブ・IT系</div>
+        </div>
+      </div>
+    </div>
     <div class="section">
       <label>① Indeed求人原稿をそのまま貼り付け <span style="color:#7A8AAA;font-weight:400">（必須）</span></label>
       <textarea id="indeed-text" placeholder="IndeedやAirworkなどの求人ページをコピペしてください..."></textarea>
@@ -230,6 +272,12 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
 </div>
 
 <script>
+let selectedTheme='navy';
+function selectTheme(t){
+  selectedTheme=t;
+  document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('theme-'+t).classList.add('selected');
+}
 const SLOTS=[{id:'logo',label:'会社ロゴ',hint:'PNG推奨・透過背景'},{id:'cover',label:'表紙写真',hint:'オフィス外観・チーム集合'},{id:'company',label:'会社概要写真',hint:'代表者・オフィス内観'},{id:'biz1',label:'事業①写真',hint:'業務風景・サービス紹介'},{id:'biz2',label:'事業②写真',hint:'現場・授業風景など'},{id:'member',label:'社員インタビュー',hint:'インタビュー対象者'},{id:'culture',label:'チーム写真',hint:'チーム・社内イベント'}];
 const photos={};
 
@@ -317,7 +365,7 @@ async function startGenerate(){
     if(i>1){document.getElementById('loading-msg').textContent=`混雑中... リトライ ${i}/4`;await sleep(3000*i);}
     try{
       const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-    text,password:pw,hpUrl:url,
+    text,password:pw,hpUrl:url,theme:selectedTheme,
     tldvUrl:document.getElementById('tldv-url').value.trim(),
     extraInfo:document.getElementById('extra-info').value.trim(),
     ceoMessage:document.getElementById('ceo-message').value.trim(),
@@ -405,7 +453,8 @@ function reset(){lastGeneratedHtml=null;document.getElementById('publish-btn').t
   document.getElementById('iv-q2').value='';
   document.getElementById('iv-a2').value='';
   document.getElementById('iv-q3').value='';
-  document.getElementById('iv-a3').value='';document.getElementById('char-count').textContent='0文字';Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
+  document.getElementById('iv-a3').value='';document.getElementById('char-count').textContent='0文字';
+  selectTheme('navy');Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
 let lastGeneratedHtml = null;

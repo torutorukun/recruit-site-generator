@@ -148,7 +148,7 @@ module.exports = async function(req, res) {
     ceoMessage, missionFuture, challengesText, jobTypesText,
     selectionText, dayScheduleText, salaryExamplesText,
     nearestStation, phoneNumber, applyUrl, employeeCount,
-    foundedDate, salesInfo, ivPerson, ivQ1, ivA1, ivQ2, ivA2, ivQ3, ivA3 } = req.body;
+    foundedDate, salesInfo, ivPerson, ivQ1, ivA1, ivQ2, ivA2, ivQ3, ivA3, theme } = req.body;
   if (password !== process.env.APP_PASSWORD) return res.status(401).json({error: 'パスワードが違います'});
   if (!text || text.trim().length < 50) return res.status(400).json({error: '求人原稿が短すぎます'});
 
@@ -210,7 +210,7 @@ module.exports = async function(req, res) {
     if (data.error) return res.status(500).json({error: data.error.message});
     const txt = (data.content?.[0]?.text || '').replace(/```json\n?|```\n?/g,'').trim();
     const parsed = JSON.parse(txt);
-    return res.status(200).json({result: parsed});
+    return res.status(200).json({result: {...parsed, theme: theme||"navy"}});
   } catch (e) {
     return res.status(500).json({error: e.message});
   }

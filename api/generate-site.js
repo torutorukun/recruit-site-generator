@@ -1,3 +1,11 @@
+const THEMES = {
+  navy:     { navy:'#1A2B4A', blue:'#1B6FBE', blueLight:'#3B8FD4', bluePale:'#EBF4FF' },
+  forest:   { navy:'#1A3D2B', blue:'#2D7A4F', blueLight:'#4A9E6E', bluePale:'#E8F5EE' },
+  charcoal: { navy:'#2C2C2C', blue:'#4A4A4A', blueLight:'#6B6B6B', bluePale:'#F0F0F0' },
+  burgundy: { navy:'#6B1A2B', blue:'#9B2335', blueLight:'#C23B50', bluePale:'#FBEEF0' },
+  stone:    { navy:'#4A3D30', blue:'#7A6A58', blueLight:'#9E8E7A', bluePale:'#F5F0EB' },
+  indigo:   { navy:'#2D1F6E', blue:'#3B2D8F', blueLight:'#5A4AB0', bluePale:'#EEEAFF' },
+};
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -8,6 +16,7 @@ module.exports = async (req, res) => {
   if (password !== process.env.APP_PASSWORD) return res.status(401).json({ error: 'Unauthorized' });
 
   const e = data;
+  const thm = THEMES[e.theme] || THEMES.navy;
   const cn = e.companyName || '会社名';
   const prefixes = ['株式会社','合同会社','有限会社','一般社団法人','特定非営利活動法人','NPO法人'];
   const prefix = prefixes.find(p => cn.startsWith(p)) || '';
@@ -87,10 +96,10 @@ module.exports = async (req, res) => {
   --border: #d6d3d0;
   --surface: #f2f1f0;
 
-  --navy: #1A2B4A;
-  --blue: #1B6FBE;
-  --blue-light: #3B8FD4;
-  --blue-pale: #EBF4FF;
+  --navy: ${thm.navy};
+  --blue: ${thm.blue};
+  --blue-light: ${thm.blueLight};
+  --blue-pale: ${thm.bluePale};
   --accent: #E8F1FB;
 
   --font-ja: AdjustedYuGothic, "Yu Gothic", YuGothic, "Hiragino Sans", "Noto Sans JP", sans-serif;
