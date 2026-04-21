@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/analyze.js": { "maxDuration": 60 },
+    "api/generate-site.js": { "maxDuration": 60 },
+    "api/publish-site.js": { "maxDuration": 60 }
+  }
+}
