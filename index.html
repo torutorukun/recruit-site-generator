@@ -413,7 +413,7 @@ async function startGenerate(){
 
   document.getElementById('loading-msg').textContent='求人原稿を解析中...';
   for(let i=1;i<=4;i++){
-    if(i>1){document.getElementById('loading-msg').textContent=`混雑中... リトライ ${i}/4`;await sleep(3000*i);}
+    if(i>1){document.getElementById('loading-msg').textContent=`処理中... (${i}/4)`;await sleep(1500);}
     try{
       const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
     text,password:pw,hpUrl:url,theme:selectedTheme,
