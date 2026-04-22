@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>採用サイト管理画面</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Yu Gothic','Hiragino Sans',sans-serif;background:#f0f7ff;min-height:100vh;padding:24px}
+.card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(27,126,196,0.1);padding:32px;max-width:800px;margin:0 auto}
+h1{font-size:20px;font-weight:700;color:#1B7EC4;margin-bottom:24px}
+.login{display:flex;gap:8px;margin-bottom:24px}
+.login input{flex:1;padding:10px 14px;border:1.5px solid #D0E8F5;border-radius:8px;font-size:13px}
+.btn{padding:10px 20px;background:#1B7EC4;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer}
+.btn:hover{background:#1558A0}
+.btn-stop{background:#FF5722}
+.btn-stop:hover{background:#E64A19}
+.btn-resume{background:#4CAF50}
+.btn-resume:hover{background:#388E3C}
+.btn-delete{background:#9E9E9E}
+.btn-delete:hover{background:#757575}
+table{width:100%;border-collapse:collapse;margin-top:16px}
+th{background:#EBF4FF;padding:10px 12px;text-align:left;font-size:12px;font-weight:700;color:#1B7EC4}
+td{padding:12px;border-bottom:1px solid #D0E8F5;font-size:13px;vertical-align:middle}
+.status-active{color:#4CAF50;font-weight:700}
+.status-stopped{color:#FF5722;font-weight:700}
+.actions{display:flex;gap:6px}
+.empty{text-align:center;padding:40px;color:#7A8AAA;font-size:14px}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🛠 採用サイト管理画面</h1>
+  <div class="login">
+    <input type="password" id="pw" placeholder="パスワード">
+    <button class="btn" onclick="loadList()">ログイン・更新</button>
+  </div>
+  <div id="content"><p style="color:#7A8AAA;font-size:13px">パスワードを入力してください</p></div>
+</div>
+
+<script>
+async function loadList() {
+  const pw = document.getElementById('pw').value;
+  if (!pw) return;
+  const r = await fetch(`/api/manage-domain?password=${encodeURIComponent(pw)}&action=list`);
+  const j = await r.json();
+  if (j.error) { document.getElementById('content').innerHTML = '<p style="color:red">'+j.error+'</p>'; return; }
+
+  const mappings = j.mappings || [];
+  if (mappings.length === 0) {
+    document.getElementById('content').innerHTML = '<div class="empty">公開中のサイトはありません</div>';
+    return;
+  }
+
+  let html = `<table><tr><th>ドメイン</th><th>ステータス</th><th>公開日時</th><th>操作</th></tr>`;
+  mappings.forEach(m => {
+    const status = m.status === 'stopped' ? '<span class="status-stopped">⛔ 停止中</span>' : '<span class="status-active">✅ 公開中</span>';
+    const date = m.createdAt ? new Date(m.createdAt).toLocaleString('ja-JP') : '-';
+    const actions = m.status === 'stopped'
+      ? `<button class="btn btn-resume" onclick="action('resume','${m.domain}')">再開</button>`
+      : `<button class="btn btn-stop" onclick="action('stop','${m.domain}')">停止</button>`;
+    html += `<tr><td><a href="https://${m.domain}" target="_blank">${m.domain}</a></td><td>${status}</td><td>${date}</td><td class="actions">${actions}<button class="btn btn-delete" onclick="action('delete','${m.domain}')">削除</button></td></tr>`;
+  });
+  html += '</table>';
+  document.getElementById('content').innerHTML = html;
+}
+
+async function action(act, domain) {
+  const pw = document.getElementById('pw').value;
+  if (act === 'delete' && !confirm(domain + ' を削除しますか？')) return;
+  await fetch('/api/manage-domain', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({password:pw, action:act, domain})
+  });
+  loadList();
+}
+</script>
+</body>
+</html>
