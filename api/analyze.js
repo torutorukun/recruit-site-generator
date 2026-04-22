@@ -168,7 +168,7 @@ module.exports = async function(req, res) {
     if (kokuzeiData.address) userContent += `所在地: ${kokuzeiData.address}\n`;
     if (kokuzeiData.founded) userContent += `登記日: ${kokuzeiData.founded}\n`;
   }
-  if (extraInfo && extraInfo.trim()) userContent += `\n\n【担当者からの補足情報（必ず反映すること）】\n${extraInfo}`;
+  if (extraInfo && extraInfo.trim()) userContent += `\n\n【担当者からの追加情報（Indeed原稿にない情報のみ補完に使う）】\n${extraInfo}`;
   if (ceoMessage && ceoMessage.trim()) userContent += `\n\n【代表メッセージ（ceoMessageフィールドにそのまま使うこと）】\n${ceoMessage}`;
   if (missionFuture && missionFuture.trim()) userContent += `\n\n【目指す未来・ビジョン（missionFutureフィールドに使うこと）】\n${missionFuture}`;
   if (challengesText && challengesText.trim()) userContent += `\n\n【取り組む課題（改行区切りでchallenges配列に入れること）】\n${challengesText}`;
