@@ -1,7 +1,17 @@
 {
   "functions": {
-    "api/analyze.js": { "maxDuration": 60 },
-    "api/generate-site.js": { "maxDuration": 60 },
-    "api/publish-site.js": { "maxDuration": 60 }
+    "api/analyze.js": {
+      "maxDuration": 60
+    },
+    "api/generate-site.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "api/publish-site.js": {
+      "maxDuration": 60
+    },
+    "api/upload-photo.js": {
+      "maxDuration": 30
+    }
   }
 }
