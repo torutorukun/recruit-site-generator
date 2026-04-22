@@ -13,5 +13,17 @@
     "api/upload-photo.js": {
       "maxDuration": 30
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/view-site",
+      "has": [
+        {
+          "type": "host",
+          "value": "recruit.xstagram.co.jp"
+        }
+      ]
+    }
+  ]
 }
