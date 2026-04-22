@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>採用特設サイトジェネレーター</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=Shippori+Mincho:wght@700&family=M+PLUS+Rounded+1c:wght@700&family=Zen+Kaku+Gothic+New:wght@700&family=Kaisei+Opti:wght@700&family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Yu Gothic','Hiragino Kaku Gothic ProN',sans-serif;background:#EFF6FF;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -22,6 +23,13 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
 .photo-empty{height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#A0B8CC;font-size:12px}
 .photo-label{padding:6px 10px;font-size:11px;font-weight:600;color:#3A4A6A}
 .photo-hint{padding:0 10px 8px;font-size:10px;color:#7A8AAA}
+.font-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.font-card{border:2px solid #D0E8F5;border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s;background:#fff}
+.font-card:hover{border-color:#1B7EC4;transform:translateY(-1px)}
+.font-card.selected{border-color:#1B7EC4;background:#EBF4FF}
+.font-sample-h{font-size:15px;font-weight:700;color:#1A2B4A;line-height:1.3;margin-bottom:3px}
+.font-sample-b{font-size:10px;color:#706d65;line-height:1.5}
+.font-label{font-size:11px;font-weight:700;color:#3A4A6A;margin-top:6px}
 .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
 .theme-card{border:2px solid #D0E8F5;border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all .2s;background:#fff}
 .theme-card:hover{border-color:#1B7EC4;transform:translateY(-1px)}
@@ -125,6 +133,43 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
         </div>
       </div>
     </div>
+
+    <div class="section">
+      <label>🔤 フォントスタイル <span style="color:#7A8AAA;font-weight:400">（見出しの字体を選んでください）</span></label>
+      <div class="font-grid">
+        <div class="font-card selected" onclick="selectFont('classic')" id="font-classic">
+          <div class="font-sample-h" style="font-family:'Noto Serif JP',serif">採用情報</div>
+          <div class="font-sample-b" style="font-family:'Noto Sans JP',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Classic</div>
+        </div>
+        <div class="font-card" onclick="selectFont('modern')" id="font-modern">
+          <div class="font-sample-h" style="font-family:'Noto Sans JP',sans-serif;letter-spacing:-0.02em">採用情報</div>
+          <div class="font-sample-b" style="font-family:'Noto Sans JP',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Modern</div>
+        </div>
+        <div class="font-card" onclick="selectFont('elegant')" id="font-elegant">
+          <div class="font-sample-h" style="font-family:'Shippori Mincho',serif">採用情報</div>
+          <div class="font-sample-b" style="font-family:'Noto Sans JP',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Elegant</div>
+        </div>
+        <div class="font-card" onclick="selectFont('friendly')" id="font-friendly">
+          <div class="font-sample-h" style="font-family:'M PLUS Rounded 1c',sans-serif">採用情報</div>
+          <div class="font-sample-b" style="font-family:'M PLUS Rounded 1c',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Friendly</div>
+        </div>
+        <div class="font-card" onclick="selectFont('bold')" id="font-bold">
+          <div class="font-sample-h" style="font-family:'Zen Kaku Gothic New',sans-serif">採用情報</div>
+          <div class="font-sample-b" style="font-family:'Noto Sans JP',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Bold</div>
+        </div>
+        <div class="font-card" onclick="selectFont('kaisei')" id="font-kaisei">
+          <div class="font-sample-h" style="font-family:'Kaisei Opti',serif">採用情報</div>
+          <div class="font-sample-b" style="font-family:'Noto Sans JP',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Kaisei</div>
+        </div>
+      </div>
+    </div>
+
     <div class="section">
       <label>① Indeed求人原稿をそのまま貼り付け <span style="color:#7A8AAA;font-weight:400">（必須）</span></label>
       <textarea id="indeed-text" placeholder="IndeedやAirworkなどの求人ページをコピペしてください..."></textarea>
@@ -277,6 +322,12 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
 
 <script>
 let selectedTheme='navy';
+let selectedFont='classic';
+function selectFont(f){
+  selectedFont=f;
+  document.querySelectorAll('.font-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('font-'+f).classList.add('selected');
+}
 function selectTheme(t){
   selectedTheme=t;
   document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('selected'));
@@ -419,7 +470,7 @@ async function startGenerate(){
     if(i>1){document.getElementById('loading-msg').textContent=`処理中... (${i}/4)`;await sleep(1500);}
     try{
       const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-    text,password:pw,hpUrl:url,theme:selectedTheme,
+    text,password:pw,hpUrl:url,theme:selectedTheme,font:selectedFont,
     tldvUrl:document.getElementById('tldv-url').value.trim(),
     extraInfo:document.getElementById('extra-info').value.trim(),
     ceoMessage:document.getElementById('ceo-message').value.trim(),
@@ -529,6 +580,7 @@ function reset(){lastGeneratedHtml=null;document.getElementById('publish-btn').t
   document.getElementById('iv-q3').value='';
   document.getElementById('iv-a3').value='';document.getElementById('char-count').textContent='0文字';
   selectTheme('navy');
+  selectFont('classic');
   clearDraft();Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 

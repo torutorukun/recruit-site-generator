@@ -1,3 +1,11 @@
+const FONTS = {
+  classic:  { serif: "'Noto Serif JP', serif",       googleUrl: "Noto+Serif+JP:wght@400;700" },
+  modern:   { serif: "'Noto Sans JP', sans-serif",    googleUrl: "Noto+Sans+JP:wght@400;700" },
+  elegant:  { serif: "'Shippori Mincho', serif",      googleUrl: "Shippori+Mincho:wght@400;700" },
+  friendly: { serif: "'M PLUS Rounded 1c', sans-serif", googleUrl: "M+PLUS+Rounded+1c:wght@400;700" },
+  bold:     { serif: "'Zen Kaku Gothic New', sans-serif", googleUrl: "Zen+Kaku+Gothic+New:wght@400;700" },
+  kaisei:   { serif: "'Kaisei Opti', serif",          googleUrl: "Kaisei+Opti:wght@400;700" },
+};
 const THEMES = {
   navy:     { navy:'#1A2B4A', blue:'#1B6FBE', blueLight:'#3B8FD4', bluePale:'#EBF4FF' },
   forest:   { navy:'#1A3D2B', blue:'#2D7A4F', blueLight:'#4A9E6E', bluePale:'#E8F5EE' },
@@ -17,6 +25,7 @@ module.exports = async (req, res) => {
 
   const e = data;
   const thm = THEMES[e.theme] || THEMES.navy;
+  const fnt = FONTS[e.font] || FONTS.classic;
   const cn = e.companyName || '会社名';
   const prefixes = ['株式会社','合同会社','有限会社','一般社団法人','特定非営利活動法人','NPO法人'];
   const prefix = prefixes.find(p => cn.startsWith(p)) || '';
@@ -70,7 +79,7 @@ module.exports = async (req, res) => {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${cn} 採用情報</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=${fnt.googleUrl}&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ── DESIGN.md準拠：游ゴシック @font-face トリック（Windows対応） ── */
 @font-face {
@@ -103,7 +112,7 @@ module.exports = async (req, res) => {
   --accent: #E8F1FB;
 
   --font-ja: AdjustedYuGothic, "Yu Gothic", YuGothic, "Hiragino Sans", "Noto Sans JP", sans-serif;
-  --font-serif: "Noto Serif JP", "游明朝", YuMincho, serif;
+  --font-serif: ${fnt.serif};
 
   --sp-xs: 4px;
   --sp-s: 8px;
