@@ -447,9 +447,29 @@ async function startGenerate(){
     }catch(e){if(i===4){showError(e.message);return;}}
   }
 
+  document.getElementById('loading-msg').textContent='写真をアップロード中...';
+  // 写真をBlobにアップロードしてURLを取得
+  const photoUrls = {};
+  try{
+    const uploadPromises = Object.entries(photos)
+      .filter(([key]) => !key.endsWith('_ratio'))
+      .map(async ([key, base64]) => {
+        try {
+          const r = await fetch('/api/upload-photo', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ password: pw, key, base64 })
+          });
+          const j = await r.json();
+          if (j.url) photoUrls[key] = j.url;
+        } catch(e) {}
+      });
+    await Promise.all(uploadPromises);
+  } catch(e) {}
+
   document.getElementById('loading-msg').textContent='採用サイトを生成中...';
   try{
-    const dataWithPhotos={...extracted,photos,hpUrl:url,indeedUrl};
+    const dataWithPhotos={...extracted, photos: photoUrls, hpUrl:url, indeedUrl};
     const r=await fetch('/api/generate-site',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:dataWithPhotos,password:pw})});
     const j=await r.json();
     if(j.error)throw new Error(j.error);
