@@ -607,7 +607,7 @@ async function publishSite() {
     const j = await r.json();
     if (j.error) throw new Error(j.error);
     const customDomain = document.getElementById('custom-domain').value.trim();
-      document.getElementById('publish-url').value = customDomain ? 'https://'+customDomain : `https://recruit-site-generator.vercel.app/api/view-site?url=${encodeURIComponent(j.url)}`;
+      document.getElementById('publish-url').value = customDomain ? 'https://'+customDomain.replace(/^https?:///, '') : `https://recruit-site-generator.vercel.app/api/view-site?url=${encodeURIComponent(j.url)}`;
     document.getElementById('publish-result').style.display = 'block';
     btn.textContent = '✅ URL発行済み';
   } catch(e) {
