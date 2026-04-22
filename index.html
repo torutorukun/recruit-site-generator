@@ -171,6 +171,10 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
     </div>
 
     <div class="section">
+      <label>🌐 公開ドメイン <span style="color:#7A8AAA;font-weight:400">（採用サイトを独自ドメインで公開する場合）</span></label>
+      <input type="text" id="custom-domain" placeholder="例：recruit.xstagram.co.jp">
+    </div>
+    <div class="section">
       <label>① Indeed求人原稿をそのまま貼り付け <span style="color:#7A8AAA;font-weight:400">（必須）</span></label>
       <textarea id="indeed-text" placeholder="IndeedやAirworkなどの求人ページをコピペしてください..."></textarea>
       <div style="font-size:11px;color:#7A8AAA;margin-top:4px" id="char-count">0文字</div>
@@ -305,11 +309,7 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
         <ul id="suggestions-list" style="list-style:none;padding:0;margin:0;font-size:12px;color:#444;line-height:2"></ul>
       </div>
       <p>HTMLファイルがダウンロードされました。<br>ブラウザで開くとプレビューできます。</p>
-      <div style="margin-bottom:12px">
-    <label style="font-size:12px;font-weight:700;color:#3A4A6A;display:block;margin-bottom:6px">カスタムドメイン <span style="font-size:11px;color:#7A8AAA;font-weight:400">（任意・設定済みドメインがあれば）</span></label>
-    <input type="text" id="custom-domain" placeholder="例：recruit.xstagram.co.jp" style="width:100%;padding:8px 12px;border:1.5px solid #D0E8F5;border-radius:8px;font-size:13px;margin-bottom:8px">
-  </div>
-  <button class="btn" id="publish-btn" onclick="publishSite()" style="margin-bottom:8px">🔗 URLで共有できるようにする</button>
+      <button class="btn" id="publish-btn" onclick="publishSite()" style="margin-bottom:8px">🔗 URLで共有できるようにする</button>
       <div id="domain-notice" style="display:none;background:#E8F5E9;border:1.5px solid #A5D6A7;border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:12px;color:#2E7D32;font-weight:700"></div>
   <div id="publish-result" style="display:none;background:#EFF6FF;border:1.5px solid #D0E8F5;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px">
         <div style="color:#3A4A6A;margin-bottom:6px;font-weight:600">共有URL（リンクを知っている人だけ見られます）</div>
@@ -585,6 +585,7 @@ function reset(){lastGeneratedHtml=null;document.getElementById('publish-btn').t
   document.getElementById('iv-q3').value='';
   document.getElementById('iv-a3').value='';document.getElementById('char-count').textContent='0文字';
   selectTheme('navy');
+  document.getElementById('custom-domain').value='';
   selectFont('classic');
   clearDraft();Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
