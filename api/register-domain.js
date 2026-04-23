@@ -1,4 +1,4 @@
-const { put, get } = require('@vercel/blob');
+const { put } = require('@vercel/blob');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -10,11 +10,11 @@ module.exports = async (req, res) => {
   if (password !== process.env.APP_PASSWORD) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
-    // ドメインマッピングをBlobに保存
-    const mapping = { domain, blobUrl, createdAt: new Date().toISOString() };
+    const mapping = { domain, blobUrl, status: 'active', createdAt: new Date().toISOString() };
     await put(`domains/${domain}.json`, JSON.stringify(mapping), {
       access: 'public',
       contentType: 'application/json',
+      addRandomSuffix: false,
     });
     return res.status(200).json({ success: true });
   } catch(e) {
