@@ -62,6 +62,21 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
 .step.done-step .step-dot{background:#EAF4FC;color:#1B7EC4;border:1.5px solid #1B7EC4}
 .divider{flex:1;height:1px;background:#D0E8F5}
 </style>
+<script>
+(async function(){
+  const host = window.location.hostname;
+  const isGenerator = host === 'recruit-site-generator.vercel.app' || host.indexOf('localhost') !== -1 || host.indexOf('vercel.app') !== -1;
+  if(!isGenerator) {
+    try {
+      const r = await fetch('/api/view-site');
+      const html = await r.text();
+      document.open();
+      document.write(html);
+      document.close();
+    } catch(e) {}
+  }
+})();
+</script>
 </head>
 <body>
 <div class="card">
