@@ -1308,11 +1308,11 @@ ${hasNumbers ? `
       <span class="section-eyebrow fade-up">Numbers</span>
       <h2 class="section-title fade-up delay-1">数字で見る${shortName}</h2>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:32px;margin-top:48px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:48px;margin-top:48px">
       ${numbers.map((n,i) => `
-      <div class="fade-up" style="text-align:center;transition-delay:${i*0.1}s">
-        <div style="font-family:var(--font-serif);font-size:52px;font-weight:700;color:var(--navy);line-height:1">${n.value}</div>
-        <div style="font-size:14px;color:var(--text-grey);margin-top:4px">${n.unit}</div>
+      <div class="fade-up" style="text-align:center;transition-delay:${i*0.1}s;min-width:120px">
+        <div style="font-family:var(--font-serif);font-size:64px;font-weight:700;color:var(--navy);line-height:1">${String(n.value).replace(/[^0-9.]/g,'')}</div>
+        <div style="font-size:15px;color:var(--text-grey);margin-top:4px">${n.unit}</div>
         <div style="font-size:13px;color:var(--text-grey);margin-top:8px;letter-spacing:0.05em">${n.label}</div>
       </div>`).join('')}
     </div>
