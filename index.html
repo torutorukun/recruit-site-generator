@@ -608,7 +608,7 @@ async function publishSite() {
     const j = await r.json();
     if (j.error) throw new Error(j.error);
     const customDomain = document.getElementById('custom-domain').value.trim();
-      document.getElementById('publish-url').value = customDomain ? 'https://'+customDomain.replace(/^https?:///, '') : `https://recruit-site-generator.vercel.app/api/view-site?url=${encodeURIComponent(j.url)}`;
+      document.getElementById('publish-url').value = customDomain ? 'https://'+customDomain.replace(/^https?:\/\//, '') : `https://recruit-site-generator.vercel.app/api/view-site?url=${encodeURIComponent(j.url)}`;
     document.getElementById('publish-result').style.display = 'block';
     if(customDomain){try{const dr=await fetch("/api/register-domain",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:sessionStorage.getItem("pw"),domain:customDomain.replace(/^https?:\/\//,""),blobUrl:j.url})});const dj=await dr.json();if(dj.success){document.getElementById("domain-notice").style.display="block";document.getElementById("domain-notice").textContent="✅ "+customDomain+" に紐付けました！";}}catch(e){}}
     btn.textContent = '✅ URL発行済み';
