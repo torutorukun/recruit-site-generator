@@ -1,0 +1,91 @@
+name: Security Check
+
+# いつ実行するか:
+#   - 全ブランチへのpush時
+#   - pull_requestが作られた/更新された時
+on:
+  push:
+  pull_request:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # 履歴も少し取得（必要な範囲で）
+          fetch-depth: 1
+
+      - name: 秘密情報・設定不備のチェック
+        shell: bash
+        run: |
+          set -u
+          FOUND=0
+
+          echo "============================================================"
+          echo " セキュリティ機械チェック (GitHub Actions)"
+          echo "============================================================"
+
+          # 1. 本物の .env が Git 管理下にないか
+          echo
+          echo "[1] .env ファイルの確認"
+          if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+            echo "  危険: 本物の .env がGit管理下にあります"
+            FOUND=1
+          else
+            echo "  OK: .env はGit管理下にありません"
+          fi
+
+          # 2. 認証ファイルの混入
+          echo
+          echo "[2] 認証ファイルの混入確認"
+          AUTH_HIT=0
+          for f in token.json client_secret.json credentials.json id_rsa; do
+            if git ls-files 2>/dev/null | grep -q -- "$f"; then
+              echo "  危険: $f がGit管理下にあります"
+              FOUND=1
+              AUTH_HIT=1
+            fi
+          done
+          [ "$AUTH_HIT" -eq 0 ] && echo "  OK: 認証ファイルの混入なし"
+
+          # 3. コード内のキー直書きパターン検索
+          echo
+          echo "[3] コード内のキー直書きパターン検索"
+          PAT='sk-ant-[A-Za-z0-9_-]{20}|sk-[A-Za-z0-9]{20}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{20}|xoxb-[0-9A-Za-z-]+'
+          HITS=$(grep -rInE "$PAT" . \
+            --exclude-dir=.git --exclude-dir=node_modules \
+            --exclude-dir=__pycache__ --exclude='*.example' 2>/dev/null | head -20)
+          if [ -n "$HITS" ]; then
+            echo "  危険: キーらしき文字列を検出（無効化＆再発行が必要）"
+            echo "$HITS" | sed 's/^/    /'
+            FOUND=1
+          else
+            echo "  OK: 既知パターンのキー直書きは検出されず"
+          fi
+
+          # 4. .gitignore の必須項目
+          echo
+          echo "[4] .gitignore の必須項目"
+          if [ -f .gitignore ]; then
+            for item in ".env" "node_modules" "__pycache__"; do
+              if grep -q -- "$item" .gitignore; then
+                echo "  OK: $item は除外指定あり"
+              else
+                echo "  注意: $item が .gitignore に無い（推奨）"
+              fi
+            done
+          else
+            echo "  注意: .gitignore がありません（推奨：作成）"
+          fi
+
+          echo
+          echo "============================================================"
+          if [ "$FOUND" -eq 1 ]; then
+            echo " 結果: 危険を検出しました。修正してから再 push してください。"
+            echo "        秘密情報が見つかった場合はキーの無効化＆再発行も必須。"
+            exit 1
+          else
+            echo " 結果: 機械チェックでは重大な問題は検出されませんでした。"
+          fi
