@@ -1,8 +1,5 @@
 name: Security Check
 
-# いつ実行するか:
-#   - 全ブランチへのpush時
-#   - pull_requestが作られた/更新された時
 on:
   push:
   pull_request:
@@ -14,13 +11,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # 履歴も少し取得（必要な範囲で）
           fetch-depth: 1
 
       - name: 秘密情報・設定不備のチェック
         shell: bash
         run: |
-          set -u
           FOUND=0
 
           echo "============================================================"
@@ -48,15 +43,18 @@ jobs:
               AUTH_HIT=1
             fi
           done
-          [ "$AUTH_HIT" -eq 0 ] && echo "  OK: 認証ファイルの混入なし"
+          if [ "$AUTH_HIT" -eq 0 ]; then
+            echo "  OK: 認証ファイルの混入なし"
+          fi
 
           # 3. コード内のキー直書きパターン検索
           echo
           echo "[3] コード内のキー直書きパターン検索"
-          PAT='sk-ant-[A-Za-z0-9_-]{20}|sk-[A-Za-z0-9]{20}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{20}|xoxb-[0-9A-Za-z-]+'
+          PAT='sk-ant-[A-Za-z0-9_-]{20}|sk-[A-Za-z0-9]{20}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{35}|xoxb-[0-9A-Za-z-]{20}'
           HITS=$(grep -rInE "$PAT" . \
             --exclude-dir=.git --exclude-dir=node_modules \
-            --exclude-dir=__pycache__ --exclude='*.example' 2>/dev/null | head -20)
+            --exclude-dir=__pycache__ --exclude='*.example' \
+            --exclude='security-check.yml' 2>/dev/null | head -20 || true)
           if [ -n "$HITS" ]; then
             echo "  危険: キーらしき文字列を検出（無効化＆再発行が必要）"
             echo "$HITS" | sed 's/^/    /'
@@ -84,7 +82,6 @@ jobs:
           echo "============================================================"
           if [ "$FOUND" -eq 1 ]; then
             echo " 結果: 危険を検出しました。修正してから再 push してください。"
-            echo "        秘密情報が見つかった場合はキーの無効化＆再発行も必須。"
             exit 1
           else
             echo " 結果: 機械チェックでは重大な問題は検出されませんでした。"
