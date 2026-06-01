@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>採用ピッチ資料ジェネレーター</title>
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<title>採用特設サイトジェネレーター</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700&family=Shippori+Mincho:wght@700&family=M+PLUS+Rounded+1c:wght@700&family=Zen+Kaku+Gothic+New:wght@700&family=Kaisei+Opti:wght@700&family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Yu Gothic','Hiragino Kaku Gothic ProN',sans-serif;background:#f0f7ff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+body{font-family:'Yu Gothic','Hiragino Kaku Gothic ProN',sans-serif;background:#EFF6FF;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(27,126,196,0.1);padding:36px;max-width:780px;width:100%}
 h1{font-size:22px;font-weight:700;color:#1B7EC4;margin-bottom:6px}
 .sub{font-size:13px;color:#7A8AAA;margin-bottom:28px}
@@ -15,8 +16,6 @@ label{display:block;font-size:13px;font-weight:600;color:#3A4A6A;margin-bottom:6
 textarea,input[type=text],input[type=password]{width:100%;padding:10px 14px;border:1.5px solid #D0E8F5;border-radius:10px;font-size:13px;font-family:inherit;outline:none;transition:border .2s;background:#F5FBFF}
 textarea:focus,input:focus{border-color:#1B7EC4}
 textarea{min-height:200px;resize:vertical;line-height:1.6}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
-.full{grid-column:span 2}
 .section{margin-bottom:22px}
 .photos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
 .photo-slot{border:2px dashed #C0DCF0;border-radius:10px;overflow:hidden;cursor:pointer;background:#F5FBFF;transition:border .2s}
@@ -25,11 +24,23 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
 .photo-empty{height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#A0B8CC;font-size:12px}
 .photo-label{padding:6px 10px;font-size:11px;font-weight:600;color:#3A4A6A}
 .photo-hint{padding:0 10px 8px;font-size:10px;color:#7A8AAA}
+.font-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.font-card{border:2px solid #D0E8F5;border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s;background:#fff}
+.font-card:hover{border-color:#1B7EC4;transform:translateY(-1px)}
+.font-card.selected{border-color:#1B7EC4;background:#EBF4FF}
+.font-sample-h{font-size:15px;font-weight:700;color:#1A2B4A;line-height:1.3;margin-bottom:3px}
+.font-sample-b{font-size:10px;color:#706d65;line-height:1.5}
+.font-label{font-size:11px;font-weight:700;color:#3A4A6A;margin-top:6px}
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.theme-card{border:2px solid #D0E8F5;border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all .2s;background:#fff}
+.theme-card:hover{border-color:#1B7EC4;transform:translateY(-1px)}
+.theme-card.selected{border-color:#1B7EC4;background:#EBF4FF}
+.theme-swatch{width:32px;height:32px;border-radius:50%;margin:0 auto 6px}
+.theme-name{font-size:12px;font-weight:700;color:#3A4A6A}
+.theme-desc{font-size:10px;color:#7A8AAA;margin-top:2px}
 .btn{display:block;width:100%;padding:14px;background:#1B7EC4;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s;margin-top:8px}
 .btn:hover{background:#1565A0}
 .btn:disabled{background:#A0B8CC;cursor:default}
-.btn-secondary{background:#fff;color:#1B7EC4;border:2px solid #1B7EC4;margin-top:12px}
-.btn-secondary:hover{background:#EAF4FC}
 .error{background:#FEF0F0;border:1.5px solid #F5C0C0;border-radius:10px;padding:12px 16px;color:#C0392B;font-size:13px;margin-bottom:16px}
 .loading{text-align:center;padding:48px 0}
 .loading .spinner{width:44px;height:44px;border:4px solid #D0E8F5;border-top:4px solid #1B7EC4;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
@@ -55,73 +66,265 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
 <body>
 <div class="card">
 
-<!-- パスワード画面 -->
 <div id="password-screen">
-  <div style="font-size:40px;margin-bottom:12px">📊</div>
-  <h1>採用ピッチ資料ジェネレーター</h1>
-  <p class="sub">Indeed原稿を貼るだけで採用ピッチ資料を自動生成</p>
+  <div style="font-size:40px;margin-bottom:12px">🌐</div>
+  <h1>採用特設サイトジェネレーター</h1>
+  <p class="sub">Indeed原稿を貼るだけで採用サイトを自動生成</p>
   <div id="pw-error" class="error" style="display:none"></div>
   <input type="password" id="pw-input" class="pw-input" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')checkPw()">
   <button class="btn" style="max-width:280px;margin:0 auto" onclick="checkPw()">ログイン</button>
 </div>
 
-<!-- メイン画面 -->
 <div id="main-screen" style="display:none">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-    <div style="font-size:28px">📊</div>
+    <div style="font-size:28px">🌐</div>
     <div>
-      <h1>採用ピッチ資料ジェネレーター</h1>
-      <p class="sub">Indeed原稿 → 22スライドPPTX自動生成</p>
+      <h1>採用特設サイトジェネレーター</h1>
+      <p class="sub">Indeed原稿 → 採用特設サイト（HTML）自動生成</p>
     </div>
   </div>
 
   <div class="step-bar" id="step-bar">
     <div class="step active" id="s1"><div class="step-dot">1</div>情報入力</div>
     <div class="divider"></div>
-    <div class="step" id="s2"><div class="step-dot">2</div>解析中</div>
+    <div class="step" id="s2"><div class="step-dot">2</div>生成中</div>
     <div class="divider"></div>
     <div class="step" id="s3"><div class="step-dot">3</div>完了</div>
   </div>
 
   <div id="error-box" class="error" style="display:none"></div>
 
-  <!-- 入力フォーム -->
   <div id="form-area">
+  <div id="restore-notice" style="display:none;background:#FFF8E1;border:1.5px solid #FFD54F;border-radius:10px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#7A6000;display:flex;align-items:center;justify-content:space-between">
+    <span>📋 前回の入力内容を復元しました</span>
+    <button onclick="clearDraft()" style="background:none;border:none;color:#7A6000;font-size:11px;cursor:pointer;text-decoration:underline">クリア</button>
+  </div>
+    <div class="section">
+      <label>🎨 カラーテーマ <span style="color:#7A8AAA;font-weight:400">（サイトの雰囲気を選んでください）</span></label>
+      <div class="theme-grid">
+        <div class="theme-card selected" onclick="selectTheme('navy')" id="theme-navy">
+          <div class="theme-swatch" style="background:#1A2B4A"></div>
+          <div class="theme-name">Navy</div>
+          <div class="theme-desc">誠実・信頼・スタンダード</div>
+        </div>
+        <div class="theme-card" onclick="selectTheme('forest')" id="theme-forest">
+          <div class="theme-swatch" style="background:#1A3D2B"></div>
+          <div class="theme-name">Forest</div>
+          <div class="theme-desc">自然・福祉・教育系</div>
+        </div>
+        <div class="theme-card" onclick="selectTheme('charcoal')" id="theme-charcoal">
+          <div class="theme-swatch" style="background:#2C2C2C"></div>
+          <div class="theme-name">Charcoal</div>
+          <div class="theme-desc">モダン・スタートアップ</div>
+        </div>
+        <div class="theme-card" onclick="selectTheme('burgundy')" id="theme-burgundy">
+          <div class="theme-swatch" style="background:#6B1A2B"></div>
+          <div class="theme-name">Burgundy</div>
+          <div class="theme-desc">高級感・ブランド</div>
+        </div>
+        <div class="theme-card" onclick="selectTheme('stone')" id="theme-stone">
+          <div class="theme-swatch" style="background:#7A6A58"></div>
+          <div class="theme-name">Stone</div>
+          <div class="theme-desc">温かみ・人材・介護系</div>
+        </div>
+        <div class="theme-card" onclick="selectTheme('indigo')" id="theme-indigo">
+          <div class="theme-swatch" style="background:#3B2D8F"></div>
+          <div class="theme-name">Indigo</div>
+          <div class="theme-desc">クリエイティブ・IT系</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <label>🔤 フォントスタイル <span style="color:#7A8AAA;font-weight:400">（見出しの字体を選んでください）</span></label>
+      <div class="font-grid">
+        <div class="font-card selected" onclick="selectFont('classic')" id="font-classic">
+          <div class="font-sample-h" style="font-family:'Noto Serif JP',serif">採用情報</div>
+          <div class="font-sample-b" style="font-family:'Noto Sans JP',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Classic</div>
+        </div>
+        <div class="font-card" onclick="selectFont('modern')" id="font-modern">
+          <div class="font-sample-h" style="font-family:'Noto Sans JP',sans-serif;letter-spacing:-0.02em">採用情報</div>
+          <div class="font-sample-b" style="font-family:'Noto Sans JP',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Modern</div>
+        </div>
+        <div class="font-card" onclick="selectFont('elegant')" id="font-elegant">
+          <div class="font-sample-h" style="font-family:'Shippori Mincho',serif">採用情報</div>
+          <div class="font-sample-b" style="font-family:'Noto Sans JP',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Elegant</div>
+        </div>
+        <div class="font-card" onclick="selectFont('friendly')" id="font-friendly">
+          <div class="font-sample-h" style="font-family:'M PLUS Rounded 1c',sans-serif">採用情報</div>
+          <div class="font-sample-b" style="font-family:'M PLUS Rounded 1c',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Friendly</div>
+        </div>
+        <div class="font-card" onclick="selectFont('bold')" id="font-bold">
+          <div class="font-sample-h" style="font-family:'Zen Kaku Gothic New',sans-serif">採用情報</div>
+          <div class="font-sample-b" style="font-family:'Noto Sans JP',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Bold</div>
+        </div>
+        <div class="font-card" onclick="selectFont('kaisei')" id="font-kaisei">
+          <div class="font-sample-h" style="font-family:'Kaisei Opti',serif">採用情報</div>
+          <div class="font-sample-b" style="font-family:'Noto Sans JP',sans-serif">一緒に働きませんか</div>
+          <div class="font-label">Kaisei</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <label>🌐 公開ドメイン <span style="color:#7A8AAA;font-weight:400">（採用サイトを独自ドメインで公開する場合）</span></label>
+      <input type="text" id="custom-domain" placeholder="例：recruit.xstagram.co.jp">
+    </div>
     <div class="section">
       <label>① Indeed求人原稿をそのまま貼り付け <span style="color:#7A8AAA;font-weight:400">（必須）</span></label>
       <textarea id="indeed-text" placeholder="IndeedやAirworkなどの求人ページをコピペしてください..."></textarea>
       <div style="font-size:11px;color:#7A8AAA;margin-top:4px" id="char-count">0文字</div>
     </div>
-
     <div class="section">
-      <label>② ホームページURL <span style="color:#7A8AAA;font-weight:400">（任意）</span></label>
+      <label>② ホームページURL <span style="color:#7A8AAA;font-weight:400">（任意・入れると会社情報・写真を自動補強）</span></label>
       <input type="text" id="hp-url" placeholder="https://example.com">
     </div>
-
     <div class="section">
-      <label>③ 写真アップロード <span style="color:#7A8AAA;font-weight:400">（任意・追加するとスライドに自動配置）</span></label>
-      <div class="photos" id="photo-grid"></div>
+      <label>③ IndeedのURL <span style="color:#7A8AAA;font-weight:400">（任意・応募ボタンのリンク先になります）</span></label>
+      <input type="text" id="indeed-url" placeholder="https://jp.indeed.com/...">
+    </div>
+    <div class="form-group">
+      <label>tldv・商談録画のリンク <span style="font-size:11px;color:#7A8AAA">（任意・会話内容から情報を補完します）</span></label>
+      <input type="text" id="tldv-url" placeholder="https://tldv.io/... または録画URL">
     </div>
 
-    <button class="btn" id="gen-btn" onclick="startGenerate()">📥 PPTXを生成してダウンロード</button>
+    <!-- 区切り -->
+    <div style="border-top:2px solid #D0E8F5;margin:24px 0 20px;"></div>
+    <p style="font-size:12px;font-weight:700;color:#1B7EC4;letter-spacing:0.08em;margin-bottom:16px">▼ 追加情報（あれば入力するほど充実したサイトになります）</p>
+
+    <div class="form-group">
+      <label>代表メッセージ <span style="font-size:11px;color:#7A8AAA">（代表者からの一言・想いなど）</span></label>
+      <textarea id="ceo-message" style="min-height:80px" placeholder="例：「私たちは〇〇という想いで創業しました。一緒に〇〇を目指せる仲間を求めています。」"></textarea>
+    </div>
+    <div class="form-group">
+      <label>目指す未来・ビジョン <span style="font-size:11px;color:#7A8AAA">（会社として実現したい世界観）</span></label>
+      <textarea id="mission-future" style="min-height:60px" placeholder="例：2030年までに全国100拠点を展開し、子どもたちの可能性を広げる社会を作る"></textarea>
+    </div>
+    <div class="form-group">
+      <label>取り組む課題 <span style="font-size:11px;color:#7A8AAA">（社会課題・事業課題など。改行で区切るとそれぞれ表示）</span></label>
+      <textarea id="challenges" style="min-height:80px" placeholder="例：&#10;発達障害を持つ子どもへの支援が全国的に不足している&#10;保護者が相談できる専門機関が少ない"></textarea>
+    </div>
+    <div class="form-group">
+      <label>募集職種 <span style="font-size:11px;color:#7A8AAA">（複数職種ある場合。職種名と説明を改行で）</span></label>
+      <textarea id="job-types" style="min-height:80px" placeholder="例：&#10;児童支援員｜子どもの学習・生活支援を担当。未経験可&#10;管理スタッフ｜施設運営・スタッフマネジメント。経験者優遇"></textarea>
+    </div>
+    <div class="form-group">
+      <label>選考フロー <span style="font-size:11px;color:#7A8AAA">（ステップを「→」で区切って入力）</span></label>
+      <input type="text" id="selection-process" placeholder="例：書類選考 → 一次面接（オンライン） → 最終面接 → 内定">
+    </div>
+    <div class="form-group">
+      <label>1日の流れ <span style="font-size:11px;color:#7A8AAA">（時間と内容を「時刻｜内容」の形式で。改行で区切る）</span></label>
+      <textarea id="day-schedule" style="min-height:100px" placeholder="例：&#10;9:00｜出社・朝礼&#10;10:00｜支援業務開始&#10;12:00｜昼休憩&#10;13:00｜午後の支援&#10;17:00｜退勤"></textarea>
+    </div>
+    <div class="form-group">
+      <label>実際の年収事例 <span style="font-size:11px;color:#7A8AAA">（具体的な事例があれば。改行で区切る）</span></label>
+      <textarea id="salary-examples" style="min-height:60px" placeholder="例：&#10;入社2年・25歳・年収320万円&#10;入社5年・30歳・主任・年収420万円"></textarea>
+    </div>
+    <div class="form-group">
+      <label>最寄り駅・アクセス <span style="font-size:11px;color:#7A8AAA">（駅名と徒歩時間など）</span></label>
+      <input type="text" id="nearest-station" placeholder="例：〇〇駅 徒歩5分 / 〇〇バス停 徒歩2分">
+    </div>
+    <div class="form-group">
+      <label>電話番号 <span style="font-size:11px;color:#7A8AAA">（掲載する場合）</span></label>
+      <input type="text" id="phone-number" placeholder="例：03-1234-5678">
+    </div>
+    <div class="form-group">
+      <label>応募フォームURL <span style="font-size:11px;color:#7A8AAA">（Googleフォーム等・応募ボタンのリンク先に使います）</span></label>
+      <input type="text" id="apply-url" placeholder="https://forms.gle/...">
+    </div>
+    <div class="form-group">
+      <label>従業員数 <span style="font-size:11px;color:#7A8AAA">（正確な人数がわかれば）</span></label>
+      <input type="text" id="employee-count" placeholder="例：32名（2024年4月現在）">
+    </div>
+    <div class="form-group">
+      <label>設立年月 <span style="font-size:11px;color:#7A8AAA">（正確な設立年月がわかれば）</span></label>
+      <input type="text" id="founded-date" placeholder="例：2018年4月">
+    </div>
+    <div class="form-group">
+      <label>売上高・実績数値 <span style="font-size:11px;color:#7A8AAA">（アピールできる数字があれば）</span></label>
+      <textarea id="sales-info" style="min-height:60px" placeholder="例：&#10;年商3億円（前年比150%成長）&#10;支援企業500社以上&#10;顧客満足度98%"></textarea>
+    </div>
+
+    <div style="border-top:1.5px solid #D0E8F5;margin:20px 0 16px;"></div>
+    <p style="font-size:12px;font-weight:700;color:#1B7EC4;letter-spacing:0.08em;margin-bottom:16px">▼ 社員インタビュー（あれば大幅にサイトのリアル感が増します）</p>
+
+    <div class="form-group">
+      <label>インタビュー対象者 <span style="font-size:11px;color:#7A8AAA">（名前・役職など）</span></label>
+      <input type="text" id="iv-person" placeholder="例：田中 花子（入社3年目・採用ディレクター）">
+    </div>
+    <div class="form-group">
+      <label>Q1 <span style="font-size:11px;color:#7A8AAA">（質問）</span></label>
+      <input type="text" id="iv-q1" placeholder="例：入社のきっかけを教えてください">
+    </div>
+    <div class="form-group">
+      <label>A1 <span style="font-size:11px;color:#7A8AAA">（回答）</span></label>
+      <textarea id="iv-a1" style="min-height:60px" placeholder="例：前職では営業をしていましたが、採用に関わる仕事がしたくて転職しました。未経験でも挑戦できる環境が決め手です。"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Q2</label>
+      <input type="text" id="iv-q2" placeholder="例：仕事のやりがいは？">
+    </div>
+    <div class="form-group">
+      <label>A2</label>
+      <textarea id="iv-a2" style="min-height:60px" placeholder="例：クライアントの採用が決まったときの喜びは格別です。"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Q3</label>
+      <input type="text" id="iv-q3" placeholder="例：どんな人と一緒に働きたいですか？">
+    </div>
+    <div class="form-group">
+      <label>A3</label>
+      <textarea id="iv-a3" style="min-height:60px" placeholder="例：素直に学び続けられる方。スキルより姿勢を大切にしています。"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>その他・補足情報 <span style="font-size:11px;color:#7A8AAA">（上記以外で伝えたいこと・会社の特徴など）</span></label>
+      <textarea id="extra-info" style="min-height:60px" placeholder="例：平均年齢28歳、創業5年で売上3倍成長、社長がYouTubeで発信中、など何でも"></textarea>
+    </div>
+    <div class="section">
+      <label>④ 写真アップロード <span style="color:#7A8AAA;font-weight:400">（任意）</span></label>
+      <div class="photos" id="photo-grid"></div>
+    </div>
+    <button class="btn" onclick="startGenerate()">🌐 採用サイトを生成してダウンロード</button>
   </div>
 
-  <!-- ローディング -->
   <div id="loading-area" style="display:none">
     <div class="loading">
       <div class="spinner"></div>
       <p id="loading-msg">求人原稿を解析中...</p>
-      <small>20〜40秒ほどかかります</small>
+      <small>30〜60秒ほどかかります</small>
     </div>
   </div>
 
-  <!-- 完了 -->
   <div id="done-area" style="display:none">
     <div class="done">
       <div class="icon">✅</div>
-      <h2>ダウンロード完了！</h2>
-      <p>PPTXファイルがダウンロードされました。<br>PowerPointまたはGoogleスライドで開いてください。</p>
-      <button class="btn" onclick="reset()">別の会社で生成する</button>
+      <h2>生成完了！</h2>
+      <div id="suggestions-panel" style="display:none;margin-top:16px;background:#F0F7FF;border:1.5px solid #B3D4F5;border-radius:12px;padding:16px 20px;text-align:left">
+        <p style="font-weight:700;font-size:13px;color:#1B6FBE;margin-bottom:10px">追加情報でさらに充実したサイトになります</p>
+        <ul id="suggestions-list" style="list-style:none;padding:0;margin:0;font-size:12px;color:#444;line-height:2"></ul>
+      </div>
+      <p>HTMLファイルがダウンロードされました。<br>ブラウザで開くとプレビューできます。</p>
+      <button class="btn" id="publish-btn" onclick="publishSite()" style="margin-bottom:8px">🔗 URLで共有できるようにする</button>
+      <div id="domain-notice" style="display:none;background:#E8F5E9;border:1.5px solid #A5D6A7;border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:12px;color:#2E7D32;font-weight:700"></div>
+  <div id="publish-result" style="display:none;background:#EFF6FF;border:1.5px solid #D0E8F5;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px">
+        <div style="color:#3A4A6A;margin-bottom:6px;font-weight:600">共有URL（リンクを知っている人だけ見られます）</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="text" id="publish-url" readonly style="flex:1;font-size:12px;background:#fff;color:#1B7EC4">
+          <button onclick="copyUrl()" style="padding:6px 12px;background:#1B7EC4;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;white-space:nowrap">コピー</button>
+        </div>
+      </div>
+      <button class="btn" onclick="reset()" style="background:#fff;color:#1B7EC4;border:2px solid #1B7EC4">別の会社で生成する</button>
+      <!-- 履歴 -->
+      <div style="margin-top:24px;text-align:left">
+        <p style="font-size:12px;font-weight:700;color:#3A4A6A;margin-bottom:8px">📋 生成履歴</p>
+        <div id="history-list" style="border:1px solid #D0E8F5;border-radius:10px;overflow:hidden;background:#fff"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -129,373 +332,379 @@ textarea{min-height:200px;resize:vertical;line-height:1.6}
 </div>
 
 <script>
-// ── 写真スロット ──
-const SLOTS = [
-  {id:'cover',  label:'表紙写真',      hint:'オフィス外観・チーム集合'},
-  {id:'company',label:'会社概要写真',   hint:'代表者・オフィス内観'},
-  {id:'biz1',   label:'事業①写真',    hint:'業務風景・サービス紹介'},
-  {id:'biz2',   label:'事業②写真',    hint:'現場・授業風景など'},
-  {id:'member', label:'社員インタビュー',hint:'インタビュー対象者'},
-  {id:'culture',label:'チーム写真',    hint:'チーム・社内イベント'},
-];
-const photos = {};
+let selectedTheme='navy';
+let selectedFont='classic';
+function selectFont(f){
+  selectedFont=f;
+  document.querySelectorAll('.font-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('font-'+f).classList.add('selected');
+}
+function selectTheme(t){
+  selectedTheme=t;
+  document.querySelectorAll('.theme-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('theme-'+t).classList.add('selected');
+}
 
-function initPhotoGrid() {
-  const grid = document.getElementById('photo-grid');
-  SLOTS.forEach(s => {
-    const div = document.createElement('div');
-    div.className = 'photo-slot';
-    div.id = 'slot-'+s.id;
-    div.innerHTML = `
-      <input type="file" accept="image/*" style="display:none" id="file-${s.id}" onchange="handlePhoto('${s.id}',this)">
-      <div class="photo-empty" onclick="document.getElementById('file-${s.id}').click()">
-        <span style="font-size:22px">📷</span>
-        <span>クリック or ドラッグ</span>
-      </div>
-      <div class="photo-label">${s.label}</div>
-      <div class="photo-hint">${s.hint}</div>`;
-    div.addEventListener('dragover', e => e.preventDefault());
-    div.addEventListener('drop', e => { e.preventDefault(); handlePhotoFile(s.id, e.dataTransfer.files[0]); });
+// 入力内容を自動保存・復元
+const SAVE_FIELDS = [
+  'indeed-text','hp-url','indeed-url','tldv-url',
+  'ceo-message','mission-future','challenges','job-types',
+  'selection-process','day-schedule','salary-examples',
+  'nearest-station','phone-number','apply-url','employee-count',
+  'founded-date','sales-info','iv-person',
+  'iv-q1','iv-a1','iv-q2','iv-a2','iv-q3','iv-a3','extra-info'
+];
+
+function clearDraft() {
+  localStorage.removeItem('recruit-form-draft');
+  document.getElementById('restore-notice').style.display = 'none';
+}
+function saveInputs() {
+  const data = {};
+  SAVE_FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  });
+  data['selected-theme'] = selectedTheme;
+  localStorage.setItem('recruit-form-draft', JSON.stringify(data));
+}
+
+function restoreInputs() {
+  try {
+    const saved = localStorage.getItem('recruit-form-draft');
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    SAVE_FIELDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && data[id]) el.value = data[id];
+    });
+    if (data['selected-theme']) selectTheme(data['selected-theme']);
+    const charCount = document.getElementById('indeed-text');
+    if (charCount) document.getElementById('char-count').textContent = charCount.value.length + '文字';
+    if (saved && JSON.parse(saved)['indeed-text']) {
+      document.getElementById('restore-notice').style.display = 'block';
+    }
+  } catch(e) {}
+}
+
+// 入力のたびに自動保存
+document.addEventListener('input', saveInputs);
+window.addEventListener('load', restoreInputs);
+
+const SLOTS=[{id:'logo',label:'会社ロゴ',hint:'PNG推奨・透過背景'},{id:'cover',label:'表紙写真',hint:'オフィス外観・チーム集合'},{id:'company',label:'会社概要写真',hint:'代表者・オフィス内観'},{id:'biz1',label:'事業①写真',hint:'業務風景・サービス紹介'},{id:'biz2',label:'事業②写真',hint:'現場・授業風景など'},{id:'member',label:'社員インタビュー',hint:'インタビュー対象者'},{id:'culture',label:'チーム写真',hint:'チーム・社内イベント'}];
+const photos={};
+
+function initPhotoGrid(){
+  const grid=document.getElementById('photo-grid');
+  SLOTS.forEach(s=>{
+    const div=document.createElement('div');
+    div.className='photo-slot';div.id='slot-'+s.id;
+    div.innerHTML=`<input type="file" accept="image/*" style="display:none" id="file-${s.id}" onchange="handlePhoto('${s.id}',this)"><div class="photo-empty" onclick="document.getElementById('file-${s.id}').click()"><span style="font-size:22px">📷</span><span>クリック・ドラッグ・Cmd+V</span></div><div class="photo-label">${s.label}</div><div class="photo-hint">${s.hint}</div>`;
+    div.addEventListener('dragover',e=>e.preventDefault());
+    div.addEventListener('drop',e=>{e.preventDefault();handlePhotoFile(s.id,e.dataTransfer.files[0]);});
     grid.appendChild(div);
   });
 }
 
-function handlePhoto(id, input) { handlePhotoFile(id, input.files[0]); }
-function handlePhotoFile(id, file) {
-  if (!file || !file.type.startsWith('image/')) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    photos[id] = e.target.result;
-    const slot = document.getElementById('slot-'+id);
-    slot.querySelector('.photo-empty').innerHTML = `<img src="${e.target.result}" style="width:100%;height:110px;object-fit:cover;display:block">`;
+function handlePhoto(id,input){handlePhotoFile(id,input.files[0]);}
+function removePhoto(id){
+  delete photos[id];
+  delete photos[id+'_ratio'];
+  const slot=document.getElementById('slot-'+id);
+  const s=SLOTS.find(s=>s.id===id);
+  slot.querySelector('.photo-empty').innerHTML=`<span style="font-size:22px">📷</span><span>クリック・ドラッグ・Cmd+V</span>`;
+  slot.querySelector('.photo-empty').style.position='';
+  document.getElementById('file-'+id).value='';
+}
+function handlePhotoFile(id,file){
+  if(!file||!file.type.startsWith('image/'))return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const result=e.target.result;
+    const image=new Image();
+    image.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const ctx=canvas.getContext('2d');
+      const MAX=1200;
+      let w=image.width,he=image.height;
+      if(w>MAX||he>MAX){const r=Math.min(MAX/w,MAX/he);w=Math.round(w*r);he=Math.round(he*r);}
+      canvas.width=w;canvas.height=he;
+      ctx.drawImage(image,0,0,w,he);
+      photos[id+'_ratio']=w/he;
+      photos[id]=canvas.toDataURL('image/jpeg',0.75);
+      const slot = document.getElementById('slot-'+id);
+      slot.querySelector('.photo-empty').innerHTML=`<img src="${result}" style="width:100%;height:110px;object-fit:cover;display:block"><button onclick="removePhoto('${id}')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:14px;cursor:pointer;line-height:1;z-index:10">×</button>`;
+      slot.querySelector('.photo-empty').style.position='relative';
+    };
+    image.src=result;
   };
   reader.readAsDataURL(file);
 }
 
-document.getElementById('indeed-text').addEventListener('input', function() {
-  document.getElementById('char-count').textContent = this.value.length + '文字';
-});
+document.getElementById('indeed-text').addEventListener('input',function(){document.getElementById('char-count').textContent=this.value.length+'文字';});
 
-// ── パスワード ──
-function checkPw() {
-  const pw = document.getElementById('pw-input').value;
-  if (!pw) return;
-  fetch('/api/analyze', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({text: 'test', password: pw})
-  }).then(r => {
-    if (r.status === 401) {
-      document.getElementById('pw-error').style.display = 'block';
-      document.getElementById('pw-error').textContent = 'パスワードが違います';
-    } else {
-      sessionStorage.setItem('pw', pw);
-      document.getElementById('password-screen').style.display = 'none';
-      document.getElementById('main-screen').style.display = 'block';
-      initPhotoGrid();
-    }
-  }).catch(() => {
-    sessionStorage.setItem('pw', pw);
-    document.getElementById('password-screen').style.display = 'none';
-    document.getElementById('main-screen').style.display = 'block';
-    initPhotoGrid();
-  });
+function checkPw(){
+  const pw=document.getElementById('pw-input').value;if(!pw)return;
+  fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:'test',password:pw})})
+  .then(r=>{
+    if(r.status===401){document.getElementById('pw-error').style.display='block';document.getElementById('pw-error').textContent='パスワードが違います';}
+    else{sessionStorage.setItem('pw',pw);document.getElementById('password-screen').style.display='none';document.getElementById('main-screen').style.display='block';initPhotoGrid();}
+  }).catch(()=>{sessionStorage.setItem('pw',pw);document.getElementById('password-screen').style.display='none';document.getElementById('main-screen').style.display='block';initPhotoGrid();});
 }
 
-// ── 生成 ──
-async function startGenerate() {
-  const text = document.getElementById('indeed-text').value.trim();
-  const url = document.getElementById('hp-url').value.trim();
-  if (!text) { showError('Indeed原稿を貼り付けてください'); return; }
+async function startGenerate(){
+  const text=document.getElementById('indeed-text').value.trim();
+  const url=document.getElementById('hp-url').value.trim();
+  const indeedUrl=document.getElementById('indeed-url').value.trim();
+  if(!text){showError('Indeed原稿を貼り付けてください');return;}
+  setStep(2);document.getElementById('form-area').style.display='none';document.getElementById('loading-area').style.display='block';document.getElementById('error-box').style.display='none';
+  const pw=sessionStorage.getItem('pw');let extracted=null;
 
-  setStep(2);
-  document.getElementById('form-area').style.display = 'none';
-  document.getElementById('loading-area').style.display = 'block';
-  document.getElementById('error-box').style.display = 'none';
+  if(url&&url.startsWith('http')){
+    document.getElementById('loading-msg').textContent='HPから情報・画像を取得中...';
+    try{
+      const imgRes=await fetch('/api/fetch-images',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hpUrl:url,password:pw})});
+      const imgData=await imgRes.json();
+      if(imgData.images){
+        Object.entries(imgData.images).forEach(([key,b64])=>{
+          if(!photos[key]&&b64){photos[key]=b64;
+            const slot=document.getElementById('slot-'+key);
+            if(slot)slot.querySelector('.photo-empty').innerHTML=`<img src="${b64}" style="width:100%;height:110px;object-fit:cover;display:block">`;
+          }
+        });
+      }
+    }catch(e){}
+  }
 
-  const pw = sessionStorage.getItem('pw');
-  let extracted = null;
+  document.getElementById('loading-msg').textContent='求人原稿を解析中...';
+  for(let i=1;i<=4;i++){
+    if(i>1){document.getElementById('loading-msg').textContent=`処理中... (${i}/4)`;await sleep(1500);}
+    try{
+      const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    text,password:pw,hpUrl:url,theme:selectedTheme,font:selectedFont,
+    tldvUrl:document.getElementById('tldv-url').value.trim(),
+    extraInfo:document.getElementById('extra-info').value.trim(),
+    ceoMessage:document.getElementById('ceo-message').value.trim(),
+    missionFuture:document.getElementById('mission-future').value.trim(),
+    challengesText:document.getElementById('challenges').value.trim(),
+    jobTypesText:document.getElementById('job-types').value.trim(),
+    selectionText:document.getElementById('selection-process').value.trim(),
+    dayScheduleText:document.getElementById('day-schedule').value.trim(),
+    salaryExamplesText:document.getElementById('salary-examples').value.trim(),
+    nearestStation:document.getElementById('nearest-station').value.trim(),
+    phoneNumber:document.getElementById('phone-number').value.trim(),
+    applyUrl:document.getElementById('apply-url').value.trim(),
+    employeeCount:document.getElementById('employee-count').value.trim(),
+    foundedDate:document.getElementById('founded-date').value.trim(),
+    salesInfo:document.getElementById('sales-info').value.trim(),
+    ivPerson:document.getElementById('iv-person').value.trim(),
+    ivQ1:document.getElementById('iv-q1').value.trim(),
+    ivA1:document.getElementById('iv-a1').value.trim(),
+    ivQ2:document.getElementById('iv-q2').value.trim(),
+    ivA2:document.getElementById('iv-a2').value.trim(),
+    ivQ3:document.getElementById('iv-q3').value.trim(),
+    ivA3:document.getElementById('iv-a3').value.trim()
+  })});
+      const j=await r.json();
+      if(j.error&&j.error.toLowerCase().includes('overload')&&i<4)continue;
+      if(j.error)throw new Error(j.error);
+      extracted=j.result;break;
+    }catch(e){if(i===4){showError(e.message);return;}}
+  }
 
-  for (let i = 1; i <= 4; i++) {
-    if (i > 1) {
-      document.getElementById('loading-msg').textContent = `混雑中... リトライ ${i}/4`;
-      await sleep(3000 * i);
-    }
-    try {
-      const r = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({text, password: pw})
+  document.getElementById('loading-msg').textContent='写真をアップロード中...';
+  // 写真をBlobにアップロードしてURLを取得
+  const photoUrls = {};
+  try{
+    const uploadPromises = Object.entries(photos)
+      .filter(([key]) => !key.endsWith('_ratio'))
+      .map(async ([key, base64]) => {
+        try {
+          const r = await fetch('/api/upload-photo', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ password: pw, key, base64 })
+          });
+          const j = await r.json();
+          if (j.url) photoUrls[key] = j.url;
+        } catch(e) {}
       });
-      const j = await r.json();
-      if (j.error && j.error.toLowerCase().includes('overload') && i < 4) continue;
-      if (j.error) throw new Error(j.error);
-      extracted = j.result;
+    await Promise.all(uploadPromises);
+  } catch(e) {}
+
+  document.getElementById('loading-msg').textContent='採用サイトを生成中...';
+  try{
+    const dataWithPhotos={...extracted, photos: photoUrls, hpUrl:url, indeedUrl};
+    const r=await fetch('/api/generate-site',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:dataWithPhotos,password:pw})});
+    const j=await r.json();
+    if(j.error)throw new Error(j.error);
+    const blob=new Blob([j.html],{type:'text/html;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    lastGeneratedHtml = j.html;
+    a.download=(extracted.companyName||'採用')+'_採用サイト.html';
+    a.click();
+    setStep(3);document.getElementById('loading-area').style.display='none';document.getElementById('done-area').style.display='block';
+    // 不足情報の提案を表示
+    (function showSuggestions(d) {
+      const tips = [];
+      if (!d.ceo) tips.push('代表者名 — 信頼感が増します');
+      if (!d.founded) tips.push('設立年月 — 会社の歴史を伝えられます');
+      if (!d.employees) tips.push('従業員数 — 規模感が伝わります');
+      if (!d.sales) tips.push('売上高・実績数値 — 成長性をアピールできます');
+      if (!d.address) tips.push('所在地 — 求職者が安心します');
+      if (!(d.interview && d.interview.q1)) tips.push('社員インタビュー（Q&A） — 職場のリアルが伝わり応募率が上がります');
+      if (!(d.careerPath && d.careerPath.filter(c=>c.title).length > 0)) tips.push('キャリアパス — 入社後のイメージが明確になります');
+      if (!(d.salaryExamples && d.salaryExamples.filter(s=>s.label).length > 0)) tips.push('年収事例（例：入社2年・28歳・年収450万円） — 具体性が増します');
+      if (!(d.services && d.services.filter(s=>s.title).length > 1)) tips.push('提供サービスの詳細 — 事業の幅が伝わります');
+      if (tips.length > 0) {
+        const panel = document.getElementById('suggestions-panel');
+        const list = document.getElementById('suggestions-list');
+        list.innerHTML = tips.map(t => `<li style="padding:3px 0;border-bottom:1px solid #D6E8FA">✚ ${t}</li>`).join('');
+        panel.style.display = 'block';
+      }
+    })(extracted);
+  }catch(e){showError('サイト生成エラー: '+e.message);}
+}
+
+function showError(msg){document.getElementById('loading-area').style.display='none';document.getElementById('form-area').style.display='block';document.getElementById('error-box').style.display='block';document.getElementById('error-box').textContent=msg;setStep(1);}
+function setStep(n){[1,2,3].forEach(i=>{const el=document.getElementById('s'+i);el.className='step'+(i===n?' active':i<n?' done-step':'');el.querySelector('.step-dot').textContent=i<n?'✓':i;});}
+function reset(){lastGeneratedHtml=null;document.getElementById('publish-btn').textContent='🔗 URLで共有できるようにする';document.getElementById('publish-btn').disabled=false;document.getElementById('publish-result').style.display='none';document.getElementById('done-area').style.display='none';document.getElementById('form-area').style.display='block';document.getElementById('indeed-text').value='';document.getElementById('hp-url').value='';document.getElementById('indeed-url').value='';document.getElementById('tldv-url').value='';document.getElementById('extra-info').value='';
+  document.getElementById('ceo-message').value='';
+  document.getElementById('mission-future').value='';
+  document.getElementById('challenges').value='';
+  document.getElementById('job-types').value='';
+  document.getElementById('selection-process').value='';
+  document.getElementById('day-schedule').value='';
+  document.getElementById('salary-examples').value='';
+  document.getElementById('nearest-station').value='';
+  document.getElementById('phone-number').value='';
+  document.getElementById('apply-url').value='';
+  document.getElementById('employee-count').value='';
+  document.getElementById('founded-date').value='';
+  document.getElementById('sales-info').value='';
+  document.getElementById('iv-person').value='';
+  document.getElementById('iv-q1').value='';
+  document.getElementById('iv-a1').value='';
+  document.getElementById('iv-q2').value='';
+  document.getElementById('iv-a2').value='';
+  document.getElementById('iv-q3').value='';
+  document.getElementById('iv-a3').value='';document.getElementById('char-count').textContent='0文字';
+  selectTheme('navy');
+  document.getElementById('custom-domain').value='';
+  selectFont('classic');
+  clearDraft();Object.keys(photos).forEach(k=>delete photos[k]);document.getElementById('photo-grid').innerHTML='';initPhotoGrid();setStep(1);}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+let lastGeneratedHtml = null;
+
+async function publishSite() {
+  if (!lastGeneratedHtml) { alert('先にサイトを生成してください'); return; }
+  const btn = document.getElementById('publish-btn');
+  btn.textContent = '公開中...';
+  btn.disabled = true;
+  try {
+    const pw = sessionStorage.getItem('pw');
+    const r = await fetch('/api/publish-site', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({html: lastGeneratedHtml, password: pw})
+    });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error);
+    const customDomain = document.getElementById('custom-domain').value.trim();
+    document.getElementById('publish-url').value = customDomain ? 'https://'+customDomain.replace(/^https?:\/\//, '') : `https://recruit-site-generator.vercel.app/api/view-site?url=${encodeURIComponent(j.url)}`;
+    document.getElementById('publish-result').style.display = 'block';
+    // 履歴に保存
+    saveHistory(
+      document.getElementById('publish-url').value,
+      document.getElementById('indeed-text').value,
+      document.getElementById('hp-url').value
+    );
+    if(customDomain){try{const dr=await fetch("/api/register-domain",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:sessionStorage.getItem("pw"),domain:customDomain.replace(/^https?:\/\//,""),blobUrl:j.url})});const dj=await dr.json();if(dj.success){document.getElementById("domain-notice").style.display="block";document.getElementById("domain-notice").textContent="✅ "+customDomain+" に紐付けました！";}}catch(e){}}
+    btn.textContent = '✅ URL発行済み';
+  } catch(e) {
+    btn.textContent = '🔗 URLで共有できるようにする';
+    btn.disabled = false;
+    alert('エラー: ' + e.message);
+  }
+}
+
+function copyUrl() {
+  const url = document.getElementById('publish-url').value;
+  navigator.clipboard.writeText(url);
+  event.target.textContent = 'コピー済み！';
+  setTimeout(() => event.target.textContent = 'コピー', 2000);
+}
+
+// クリップボードからペースト対応
+document.addEventListener('paste', function(e) {
+  const items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.startsWith('image/')) {
+      const file = items[i].getAsFile();
+      // アクティブなスロットがあればそこに、なければ最初の空きスロットに
+      const active = document.querySelector('.photo-slot:hover');
+      const emptySlot = [...document.querySelectorAll('.photo-slot')].find(s => s.querySelector('img') === null || s.querySelector('.photo-empty img') === null);
+      const targetSlot = active || emptySlot;
+      if (targetSlot) {
+        const id = targetSlot.id.replace('slot-', '');
+        handlePhotoFile(id, file);
+      }
       break;
-    } catch(e) {
-      if (i === 4) { showError(e.message); return; }
     }
   }
-
-  document.getElementById('loading-msg').textContent = 'PPTXを生成中...';
-  try {
-    await makePptx(extracted, url, photos);
-    setStep(3);
-    document.getElementById('loading-area').style.display = 'none';
-    document.getElementById('done-area').style.display = 'block';
-  } catch(e) {
-    showError('PPTX生成エラー: ' + e.message);
-  }
-}
-
-function showError(msg) {
-  document.getElementById('loading-area').style.display = 'none';
-  document.getElementById('form-area').style.display = 'block';
-  document.getElementById('error-box').style.display = 'block';
-  document.getElementById('error-box').textContent = msg;
-  setStep(1);
-}
-
-function setStep(n) {
-  [1,2,3].forEach(i => {
-    const el = document.getElementById('s'+i);
-    el.className = 'step' + (i === n ? ' active' : i < n ? ' done-step' : '');
-    el.querySelector('.step-dot').textContent = i < n ? '✓' : i;
-  });
-}
-
-function reset() {
-  document.getElementById('done-area').style.display = 'none';
-  document.getElementById('form-area').style.display = 'block';
-  document.getElementById('indeed-text').value = '';
-  document.getElementById('hp-url').value = '';
-  document.getElementById('char-count').textContent = '0文字';
-  Object.keys(photos).forEach(k => delete photos[k]);
-  document.getElementById('photo-grid').innerHTML = '';
-  initPhotoGrid();
-  setStep(1);
-}
-
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-// ── PPTX生成 ──
-async function makePptx(e, url, photos) {
-  const pres = new PptxGenJS();
-  pres.layout = 'LAYOUT_16x9';
-  const cn = e.companyName || '会社名';
-  const F = 'Yu Gothic';
-  const C = { HEADER:'1B7EC4', CYAN:'1E9BC5', DARK:'3A4A6A', GRAY:'7A8AAA', WHITE:'FFFFFF' };
-
-  const sec = (num, title) => {
-    const sl = pres.addSlide(); sl.background = {color:'E8F4FA'};
-    sl.addShape(pres.shapes.OVAL,{x:5.85,y:0.28,w:3.8,h:3.8,line:{color:'88C4DE',width:2},fill:{color:'B8E0F2',transparency:65}});
-    sl.addShape(pres.shapes.OVAL,{x:6.22,y:0.65,w:3.05,h:3.05,line:{color:'68B4D2',width:1.5},fill:{color:C.WHITE,transparency:100}});
-    sl.addShape(pres.shapes.RECTANGLE,{x:0.46,y:2.42,w:0.07,h:0.64,fill:{color:C.CYAN},line:{color:C.CYAN}});
-    sl.addText(`${String(num).padStart(2,'0')} ${title}`,{x:0.59,y:2.35,w:5,h:0.78,fontSize:22,color:C.DARK,fontFace:F,margin:0});
-  };
-  const hdr = (sl, num, title) => {
-    sl.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:10,h:0.52,fill:{color:C.HEADER},line:{color:C.HEADER}});
-    sl.addText(`— ${String(num).padStart(2,'0')} ${title}`,{x:0.18,y:0,w:7,h:0.52,fontSize:13,color:C.WHITE,fontFace:F,bold:true,valign:'middle',margin:0});
-    sl.addText(cn,{x:7,y:0,w:2.9,h:0.52,fontSize:10,color:C.WHITE,fontFace:F,valign:'middle',align:'right',margin:0});
-  };
-  const ftr = (sl, pg) => {
-    sl.addText(String(pg),{x:0.3,y:5.22,w:0.8,h:0.28,fontSize:9,color:C.GRAY,fontFace:F,margin:0});
-    sl.addText(`© ${cn}`,{x:5.5,y:5.22,w:4.2,h:0.28,fontSize:9,color:C.GRAY,fontFace:F,align:'right',margin:0});
-  };
-  const img = (sl, id, x, y, w, h) => {
-    if (photos[id]) sl.addImage({data:photos[id],x,y,w,h,sizing:{type:'cover',w,h}});
-  };
-
-  // 1 タイトル
-  { const sl=pres.addSlide(); sl.background={color:'0E72A8'};
-    sl.addShape(pres.shapes.RECTANGLE,{x:0,y:1.1,w:7.2,h:1.0,fill:{color:C.WHITE},line:{color:C.WHITE}});
-    sl.addText(cn,{x:0.35,y:1.1,w:6.8,h:1.0,fontSize:26,color:'0E72A8',fontFace:F,bold:true,valign:'middle',margin:5});
-    sl.addShape(pres.shapes.RECTANGLE,{x:0,y:2.22,w:5.2,h:0.74,fill:{color:C.WHITE},line:{color:C.WHITE}});
-    sl.addText('採用ピッチ資料',{x:0.35,y:2.22,w:4.8,h:0.74,fontSize:22,color:'0E72A8',fontFace:F,bold:true,valign:'middle',margin:5});
-    if(url) sl.addText(url,{x:0.35,y:3.08,w:4.5,h:0.38,fontSize:12,color:'88CCDE',fontFace:F});
-    img(sl,'cover',6.8,0,3.2,5.625);
-    sl.addText(`© ${cn}`,{x:0.3,y:5.25,w:5,h:0.3,fontSize:9,color:'6ABBD8',fontFace:F}); }
-
-  // 2 目次
-  { const sl=pres.addSlide(); sl.background={color:'F2F9FD'};
-    sl.addShape(pres.shapes.RECTANGLE,{x:0,y:0,w:0.1,h:5.625,fill:{color:'B0D8EE'},line:{color:'B0D8EE'}});
-    sl.addText('目\n次',{x:0.15,y:0.6,w:0.62,h:1.5,fontSize:13,color:C.CYAN,fontFace:F,bold:true,align:'center'});
-    ['会社概要','組織','事業紹介','評価・報酬制度','カルチャー','働き方・制度'].forEach((s,i)=>
-      sl.addText(`${String(i+1).padStart(2,'0')}   ${s}`,{x:0.88,y:0.55+i*0.77,w:5.5,h:0.65,fontSize:19,color:C.DARK,fontFace:F})); }
-
-  sec(1,'会社概要');
-
-  // 4 会社概要
-  { const sl=pres.addSlide(); sl.background={color:'F5FBFF'}; hdr(sl,'01','会社概要');
-    const rows=[['社名',e.companyName],['所在地',e.address],['代表者',e.ceo],['設立',e.founded],['従業員',e.employees],['売上高',e.sales],['事業内容',e.business],['HP',url]].filter(r=>r[1]);
-    rows.forEach(([k,v],i)=>{
-      sl.addText(k,{x:0.5,y:0.7+i*0.58,w:1.3,h:0.48,fontSize:11,color:C.GRAY,fontFace:F,valign:'middle',margin:0});
-      sl.addShape(pres.shapes.LINE,{x:0.5,y:1.11+i*0.58,w:5.8,h:0,line:{color:'E0EEF8',width:0.5}});
-      sl.addText(v,{x:1.95,y:0.7+i*0.58,w:4.3,h:0.48,fontSize:11,color:C.DARK,fontFace:F,valign:'middle',margin:0});});
-    img(sl,'company',6.7,0.6,3.0,4.7); ftr(sl,4); }
-
-  // 5 ミッション
-  { const sl=pres.addSlide(); sl.background={color:C.WHITE};
-    sl.addText(e.mission||'',{x:0.5,y:0.3,w:9,h:2.0,fontSize:24,color:C.CYAN,fontFace:F,lineSpacingMultiple:1.4});
-    if(e.missionEn) sl.addText(`"${e.missionEn}"`,{x:0.5,y:2.05,w:8.5,h:0.45,fontSize:13,color:C.GRAY,fontFace:'Arial',italic:true});
-    sl.addText(e.missionDesc||'',{x:0.5,y:2.62,w:9,h:2.8,fontSize:12.5,color:C.DARK,fontFace:F,lineSpacingMultiple:1.65}); }
-
-  sec(2,'組織（職種・構成など）');
-
-  // 7 組織
-  { const sl=pres.addSlide(); sl.background={color:'EEF7FC'}; hdr(sl,'02','組織');
-    [[e.employees||'','従業員数'],[e.founded||'','設立'],[e.ceo||'','代表者']].forEach(([n,l],i)=>{
-      const x=0.4+i*3.15;
-      sl.addShape(pres.shapes.RECTANGLE,{x,y:0.72,w:2.8,h:1.55,fill:{color:'EAF5FB'},line:{color:'C0DCF0'}});
-      sl.addText(n,{x,y:0.78,w:2.8,h:0.75,fontSize:20,color:C.CYAN,fontFace:F,bold:true,align:'center',valign:'middle',margin:0});
-      sl.addText(l,{x,y:1.45,w:2.8,h:0.35,fontSize:12,color:C.DARK,fontFace:F,bold:true,align:'center',margin:0});});
-    sl.addShape(pres.shapes.RECTANGLE,{x:7.1,y:0.72,w:2.6,h:3.2,fill:{color:'EAF5FB'},line:{color:'C0DCF0'}});
-    sl.addText('求める人物像',{x:7.2,y:0.82,w:2.4,h:0.3,fontSize:11,color:C.DARK,fontFace:F,bold:true,margin:0});
-    (e.wantedList||[]).slice(0,5).forEach((v,i)=>sl.addText('・'+v,{x:7.2,y:1.22+i*0.42,w:2.4,h:0.38,fontSize:10,color:C.DARK,fontFace:F,margin:0}));
-    img(sl,'culture',0.4,2.45,6.5,2.75); ftr(sl,7); }
-
-  sec(3,'事業紹介');
-
-  // 9 事業概要
-  { const sl=pres.addSlide(); sl.background={color:'EEF7FC'}; hdr(sl,'03','事業紹介');
-    sl.addShape(pres.shapes.RECTANGLE,{x:0.4,y:0.62,w:9.2,h:0.55,fill:{color:'D2EBF6'},line:{color:'B5DCEE'}});
-    sl.addText(e.bizHeadline||'',{x:0.4,y:0.62,w:9.2,h:0.55,fontSize:15,color:C.DARK,fontFace:F,bold:true,align:'center',valign:'middle'});
-    [{x:0.3,y:1.28},{x:5.1,y:1.28},{x:0.3,y:3.3},{x:5.1,y:3.3}].forEach((p,i)=>{
-      const s=(e.services||[])[i]; if(!s)return;
-      sl.addText(s.title,{x:p.x,y:p.y,w:4.6,h:0.44,fontSize:14,color:C.CYAN,fontFace:F,bold:true,margin:0});
-      sl.addText(s.desc,{x:p.x,y:p.y+0.46,w:4.6,h:1.5,fontSize:10.5,color:C.DARK,fontFace:F,lineSpacingMultiple:1.35});});
-    ftr(sl,9); }
-
-  // 10 事業詳細1
-  { const sl=pres.addSlide(); sl.background={color:'EEF7FC'}; hdr(sl,'03','事業紹介');
-    sl.addShape(pres.shapes.RECTANGLE,{x:0.3,y:0.62,w:5.2,h:0.55,fill:{color:'D2EBF6'},line:{color:'B5DCEE'}});
-    sl.addShape(pres.shapes.OVAL,{x:0.38,y:0.72,w:0.24,h:0.24,fill:{color:C.HEADER},line:{color:C.HEADER}});
-    sl.addText(e.biz1Title||'',{x:0.68,y:0.62,w:4.7,h:0.55,fontSize:14,color:C.DARK,fontFace:F,bold:true,valign:'middle',margin:0});
-    sl.addText(e.biz1Body||'',{x:0.3,y:1.28,w:5.8,h:3.75,fontSize:13,color:C.DARK,fontFace:F,lineSpacingMultiple:1.65});
-    img(sl,'biz1',6.3,0.62,3.4,4.2); ftr(sl,10); }
-
-  // 11 事業詳細2
-  { const sl=pres.addSlide(); sl.background={color:'EEF7FC'}; hdr(sl,'03','事業紹介');
-    sl.addShape(pres.shapes.RECTANGLE,{x:0.3,y:0.62,w:3.8,h:0.55,fill:{color:'D2EBF6'},line:{color:'B5DCEE'}});
-    sl.addShape(pres.shapes.OVAL,{x:0.38,y:0.72,w:0.24,h:0.24,fill:{color:C.HEADER},line:{color:C.HEADER}});
-    sl.addText(e.biz2Title||'',{x:0.68,y:0.62,w:3.3,h:0.55,fontSize:14,color:C.DARK,fontFace:F,bold:true,valign:'middle',margin:0});
-    sl.addText(e.biz2Body||'',{x:0.3,y:1.28,w:5.8,h:3.75,fontSize:13,color:C.DARK,fontFace:F,lineSpacingMultiple:1.65});
-    img(sl,'biz2',6.3,0.62,3.4,4.2); ftr(sl,11); }
-
-  sec(4,'評価・報酬制度');
-
-  // 13 報酬
-  { const sl=pres.addSlide(); sl.background={color:'EEF7FC'}; hdr(sl,'04','評価・報酬制度');
-    sl.addShape(pres.shapes.RECTANGLE,{x:0.4,y:0.62,w:9.2,h:0.55,fill:{color:'D2EBF6'},line:{color:'B5DCEE'}});
-    sl.addText('成果と経験に応じた明確な報酬体系',{x:0.4,y:0.62,w:9.2,h:0.55,fontSize:15,color:C.DARK,fontFace:F,bold:true,align:'center',valign:'middle'});
-    (e.salaryFactors||[]).slice(0,3).forEach((f,i)=>{
-      const y=1.4+i*1.1;
-      sl.addShape(pres.shapes.OVAL,{x:0.28,y,w:1.2,h:0.88,fill:{color:C.CYAN},line:{color:C.CYAN}});
-      sl.addText(f.name,{x:0.28,y,w:1.2,h:0.88,fontSize:11,color:C.WHITE,fontFace:F,bold:true,align:'center',valign:'middle'});
-      sl.addShape(pres.shapes.RECTANGLE,{x:1.6,y:y+0.05,w:8.0,h:0.78,fill:{color:'EAF4FB'},line:{color:'C0DCF0'}});
-      sl.addText('● '+f.desc,{x:1.7,y:y+0.05,w:7.8,h:0.78,fontSize:11.5,color:C.DARK,fontFace:F,valign:'middle'});});
-    ftr(sl,13); }
-
-  // 14 キャリアパス
-  { const sl=pres.addSlide(); sl.background={color:'F5FAFF'}; hdr(sl,'04','評価・報酬制度');
-    sl.addText('キャリアパス',{x:0.3,y:0.62,w:9.4,h:0.45,fontSize:17,color:C.DARK,fontFace:F,bold:true,align:'center'});
-    sl.addShape(pres.shapes.LINE,{x:0.88,y:1.18,w:0,h:3.9,line:{color:C.CYAN,width:2}});
-    const cols=['8FCAE8','4A9FD4','1B7EC4','0D5FA0'];
-    (e.careerPath||[]).slice(0,4).forEach((s,i)=>{
-      const y=1.12+i*0.98;
-      sl.addShape(pres.shapes.OVAL,{x:0.65,y:y+0.1,w:0.46,h:0.46,fill:{color:cols[i]},line:{color:cols[i]}});
-      sl.addShape(pres.shapes.RECTANGLE,{x:1.28,y,w:8.4,h:0.86,fill:{color:'F0F7FF'},line:{color:'C8E0F2'}});
-      sl.addText(s.title,{x:1.38,y:y+0.04,w:4.5,h:0.34,fontSize:13,color:C.DARK,fontFace:F,bold:true,margin:0});
-      sl.addText(s.period,{x:5.9,y:y+0.04,w:1.6,h:0.34,fontSize:10,color:C.GRAY,fontFace:F,margin:0});
-      sl.addText(s.salary,{x:7.6,y:y+0.04,w:2.0,h:0.34,fontSize:11,color:C.CYAN,fontFace:F,bold:true,align:'right',margin:0});
-      sl.addText(s.desc,{x:1.38,y:y+0.46,w:8.2,h:0.34,fontSize:10,color:C.GRAY,fontFace:F,margin:0});});
-    ftr(sl,14); }
-
-  // 15 年収実績
-  { const sl=pres.addSlide(); sl.background={color:C.WHITE}; hdr(sl,'04','評価・報酬制度');
-    sl.addText('年収レンジ・実績',{x:0.4,y:0.65,w:6,h:0.4,fontSize:15,color:C.DARK,fontFace:F,bold:true});
-    const examples = e.salaryExamples || [];
-    const top=1.18,ch=3.5;
-    if(examples.length > 0) {
-      const maxVal = Math.max(...examples.map(ex => parseInt(ex.amount)||0)) * 1.15 || 1000;
-      const cols2 = ['A8D8F0','4A9FD4','0D5FA0'];
-      examples.slice(0,3).forEach((ex,i)=>{
-        const v=parseInt(ex.amount)||0, x=0.8+i*2.0, w=1.5, bh=v/maxVal*ch, by=top+ch-bh;
-        sl.addShape(pres.shapes.RECTANGLE,{x,y:by,w,h:bh,fill:{color:cols2[i]},line:{color:cols2[i]}});
-        sl.addText(`${v}万円`,{x:x-0.1,y:by-0.4,w:w+0.2,h:0.38,fontSize:14,color:C.DARK,fontFace:F,bold:true,align:'center',margin:0});
-        sl.addText(ex.label,{x:x-0.1,y:top+ch+0.1,w:w+0.2,h:0.45,fontSize:10,color:C.GRAY,fontFace:F,align:'center'});});}
-    sl.addShape(pres.shapes.LINE,{x:0.5,y:top+ch,w:6.3,h:0,line:{color:'D0E8F5',width:1}});
-    sl.addShape(pres.shapes.RECTANGLE,{x:7.0,y:0.88,w:2.7,h:3.8,fill:{color:'EAF5FB'},line:{color:'C0DCF0'}});
-    sl.addText(e.salaryUnit==='年俸'?'年俸レンジ':'月給レンジ',{x:7.1,y:1.05,w:2.5,h:0.35,fontSize:13,color:C.DARK,fontFace:F,bold:true,align:'center'});
-    const sMin=parseInt(e.salaryMin)||0, sMax=parseInt(e.salaryMax)||0;
-    if(sMin&&sMax){
-      sl.addText(`${sMin}〜`,{x:7.1,y:1.55,w:2.5,h:0.65,fontSize:28,color:C.CYAN,fontFace:F,bold:true,align:'center'});
-      sl.addText(`${sMax}万円`,{x:7.1,y:2.2,w:2.5,h:0.55,fontSize:22,color:C.CYAN,fontFace:F,bold:true,align:'center'});}
-    sl.addShape(pres.shapes.LINE,{x:7.2,y:2.88,w:2.3,h:0,line:{color:'C0DCF0',width:0.5}});
-    const noteLines = ['賞与・昇給','固定残業代含む','※詳細は面接時確認'];
-    noteLines.forEach((t,i)=>sl.addText(t,{x:7.1,y:2.98+i*0.35,w:2.5,h:0.32,fontSize:10,color:C.GRAY,fontFace:F,align:'center'}));
-    ftr(sl,15); }
-
-  sec(5,'カルチャー');
-
-  // 17 カルチャー（ルール：円右端1.8+余白0.4=テキストx:2.2）
-  { const sl=pres.addSlide(); sl.background={color:'EEF7FC'}; hdr(sl,'05','カルチャー');
-    sl.addText(`${e.cultureVal1||''}　×　${e.cultureVal2||''}`,{x:0.4,y:0.65,w:9.2,h:0.62,fontSize:20,color:C.DARK,fontFace:F,bold:true,align:'center'});
-    sl.addShape(pres.shapes.OVAL,{x:0.1,y:1.2,w:1.7,h:1.7,fill:{color:'A8D8F0',transparency:35},line:{color:C.CYAN,width:2}});
-    sl.addText(e.cultureVal1||'',{x:0.1,y:1.2,w:1.7,h:1.7,fontSize:12,color:C.DARK,fontFace:F,bold:true,align:'center',valign:'middle'});
-    sl.addShape(pres.shapes.OVAL,{x:0.1,y:3.05,w:1.7,h:1.7,fill:{color:'B0E4F8',transparency:35},line:{color:C.CYAN,width:2}});
-    sl.addText(e.cultureVal2||'',{x:0.1,y:3.05,w:1.7,h:1.7,fontSize:12,color:C.DARK,fontFace:F,bold:true,align:'center',valign:'middle'});
-    sl.addText(e.cultureDesc||'',{x:2.2,y:1.15,w:7.5,h:3.8,fontSize:12.5,color:C.DARK,fontFace:F,lineSpacingMultiple:1.75});
-    ftr(sl,17); }
-
-  // 18 社員インタビュー（ルール：Q(0.32)+A(0.72)+gap(0.2)=1.24/block）
-  { const sl=pres.addSlide(); sl.background={color:'EEF7FC'}; hdr(sl,'05','カルチャー');
-    sl.addText('社員の声',{x:0.4,y:0.65,w:9,h:0.42,fontSize:18,color:C.DARK,fontFace:F,bold:true,align:'center'});
-    sl.addShape(pres.shapes.RECTANGLE,{x:0.35,y:1.15,w:9.3,h:4.1,fill:{color:'F0F8FF'},line:{color:'C0DCF0'}});
-    img(sl,'member',0.45,1.28,1.5,1.5);
-    const iv=e.interview||{};
-    sl.addText(iv.person||'',{x:0.45,y:2.84,w:1.5,h:0.28,fontSize:9,color:C.GRAY,fontFace:F,align:'center'});
-    // 各ブロック: Q@qy(h:0.32) A@qy+0.35(h:0.72) → 終了qy+1.07。次block=qy+1.27
-    // Q(h:0.28)+A(h:0.8)+gap(0.15)=1.23/block。3blocks=3.69。開始1.28。終了4.97。BOX終了5.25でOK
-    [{q:iv.q1,a:iv.a1,qy:1.28},{q:iv.q2,a:iv.a2,qy:2.51},{q:iv.q3,a:iv.a3,qy:3.74}].forEach(b=>{
-      if(!b.q)return;
-      sl.addText(b.q,{x:2.1,y:b.qy,w:7.5,h:0.28,fontSize:11.5,color:C.CYAN,fontFace:F,bold:true,margin:0});
-      sl.addText(b.a||'',{x:2.1,y:b.qy+0.3,w:7.5,h:0.78,fontSize:10.5,color:C.DARK,fontFace:F,lineSpacingMultiple:1.35});});
-    ftr(sl,18); }
-
-  // 19 こんな方と
-  { const sl=pres.addSlide(); sl.background={color:'EEF7FC'}; hdr(sl,'05','カルチャー');
-    sl.addText('こんな方と働きたい',{x:0.4,y:0.65,w:9,h:0.55,fontSize:20,color:C.CYAN,fontFace:F,bold:true,align:'center'});
-    (e.wantedList||[]).slice(0,5).forEach((v,i)=>{
-      sl.addShape(pres.shapes.RECTANGLE,{x:1.2,y:1.38+i*0.75,w:7.6,h:0.6,fill:{color:'EAF5FB'},line:{color:'C0DCF0'}});
-      sl.addShape(pres.shapes.RECTANGLE,{x:1.2,y:1.38+i*0.75,w:0.08,h:0.6,fill:{color:C.CYAN},line:{color:C.CYAN}});
-      sl.addText(v,{x:1.45,y:1.38+i*0.75,w:7.2,h:0.6,fontSize:14,color:C.DARK,fontFace:F,valign:'middle',margin:0});});
-    ftr(sl,19); }
-
-  sec(6,'働き方・制度');
-
-  // 21 働き方
-  { const sl=pres.addSlide(); sl.background={color:'EEF7FC'}; hdr(sl,'06','働き方・制度');
-    // 就業時間の内容が長い場合を考慮してfontSize:9.5、行間1.3
-    // ラインは各セクションタイトルの右側のみ（テキストと被らない位置）
-    [['就業時間',e.workHours||''],['勤務地',e.workLocation||''],['休暇・休日',(e.holidays||[]).join('\n')]].forEach((s,i)=>{
-      const y=0.65+i*1.52;
-      sl.addShape(pres.shapes.OVAL,{x:0.35,y:y+0.08,w:0.25,h:0.25,fill:{color:C.HEADER},line:{color:C.HEADER}});
-      sl.addText(s[0],{x:0.68,y,w:1.5,h:0.38,fontSize:13,color:C.DARK,fontFace:F,bold:true,margin:0});
-      sl.addShape(pres.shapes.LINE,{x:2.3,y:y+0.2,w:2.6,h:0,line:{color:'C0DCF0',width:0.8}});
-      sl.addText(s[1],{x:0.68,y:y+0.4,w:4.3,h:1.0,fontSize:9.5,color:C.DARK,fontFace:F,lineSpacingMultiple:1.3});});
-    sl.addShape(pres.shapes.OVAL,{x:5.15,y:0.73,w:0.25,h:0.25,fill:{color:C.HEADER},line:{color:C.HEADER}});
-    sl.addText('福利厚生',{x:5.47,y:0.65,w:4,h:0.38,fontSize:13,color:C.DARK,fontFace:F,bold:true,margin:0});
-    sl.addShape(pres.shapes.LINE,{x:6.25,y:0.85,w:3.35,h:0,line:{color:'C0DCF0',width:0.8}});
-    (e.benefits||[]).slice(0,7).forEach((b,i)=>sl.addText('・'+b,{x:5.15,y:1.1+i*0.38,w:4.55,h:0.35,fontSize:11,color:C.DARK,fontFace:F,margin:0}));
-    ftr(sl,21); }
-
-  await pres.writeFile({fileName:`${cn}_採用ピッチ資料.pptx`});
-}
-
-document.getElementById('pw-input').addEventListener('keydown', e => {
-  if(e.key === 'Enter') checkPw();
 });
+// ── 履歴機能 ──
+function saveHistory(siteUrl, text, hpUrl) {
+  const history = JSON.parse(localStorage.getItem('siteHistory') || '[]');
+  // 会社名をテキストから簡易抽出
+  const companyMatch = text && text.match(/会社名[：:]\s*([^\n]+)/);
+  const companyName = companyMatch ? companyMatch[1].trim() : (hpUrl ? hpUrl.replace(/https?:\/\//, '').split('/')[0] : '会社名不明');
+  history.unshift({
+    companyName,
+    siteUrl,
+    hpUrl: hpUrl || '',
+    text: text ? text.slice(0, 300) : '',
+    createdAt: new Date().toLocaleDateString('ja-JP', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' })
+  });
+  localStorage.setItem('siteHistory', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const container = document.getElementById('history-list');
+  if (!container) return;
+  const history = JSON.parse(localStorage.getItem('siteHistory') || '[]');
+  if (history.length === 0) {
+    container.innerHTML = '<p style="font-size:12px;color:#9CA3AF;text-align:center;padding:16px 0">まだ履歴がありません</p>';
+    return;
+  }
+  container.innerHTML = history.map((h, i) => `
+    <div style="padding:10px 14px;border-bottom:1px solid #E5E7EB;display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer" onclick="loadHistory(${i})" onmouseover="this.style.background='#F5FBFF'" onmouseout="this.style.background='transparent'">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#1A2B4A">${h.companyName}</div>
+        <div style="font-size:11px;color:#9CA3AF;margin-top:2px">${h.createdAt}</div>
+      </div>
+      ${h.siteUrl ? `<a href="${h.siteUrl}" target="_blank" onclick="event.stopPropagation()" style="font-size:11px;color:#1B7EC4;white-space:nowrap;text-decoration:none;border:1px solid #B3D4F5;padding:4px 10px;border-radius:4px;flex-shrink:0">開く</a>` : ''}
+    </div>
+  `).join('');
+}
+
+function loadHistory(index) {
+  const history = JSON.parse(localStorage.getItem('siteHistory') || '[]');
+  const h = history[index];
+  if (!h) return;
+  reset();
+  if (h.text) { document.getElementById('indeed-text').value = h.text; document.getElementById('char-count').textContent = h.text.length + '文字'; }
+  if (h.hpUrl) document.getElementById('hp-url').value = h.hpUrl;
+}
+
+// ページ読み込み時に履歴表示
+document.addEventListener('DOMContentLoaded', () => renderHistory());
+
+document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPw();});
 </script>
 </body>
 </html>
